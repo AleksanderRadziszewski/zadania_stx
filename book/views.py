@@ -32,13 +32,20 @@ class SearchBookListView(View):
 
 class AddUpdateBookView(View):
     def get(self,request,pk):
-        book=Book.objects.get(pk=pk)
+        book,created = Book.objects.get_or_create(pk=pk, defaults={'title': 'bla',
+                                                           'author': 'bb',
+                                                           'pub_date': date(1940, 10, 1),
+                                                           'pages_amount': 80,
+                                                           'pub_language': 'English',
+                                                           'isbn_num': '222-444-444',
+                                                           'link': 'https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.barnesandnoble.com%2Fw%2Fharry-potter-i-komnata-tajemnic-j-k-rowling%2F1116540470&psig=AOvVaw3la-vaVjRPIpCZgD7o0T3q&ust=1604313551353000&source=images&cd=vfe&ved=0CAIQjRxqFwoTCJDh6OyT4ewCFQAAAAAdAAAAABAG'})
+
         form=AddUpdateBookForm(instance=book)
         return render(request, "book/edit_book.html", {"form":form})
     def post(self,request,pk):
         form=AddUpdateBookForm(request.POST)
         if form.is_valid():
-            book = Book.objects.get(pk=pk)
+            book=Book.objects.get(pk=pk)
             book.title=form.cleaned_data.get('title')
             book.author = form.cleaned_data.get('author')
             book.pub_date = form.cleaned_data.get('pub_date')

@@ -4,7 +4,7 @@ from django.utils import timezone
 
 
 class Book (models.Model):
-    title=models.CharField(max_length=100)
+    title=models.CharField(max_length=100,blank=True)
     author=models.CharField(max_length=100)
     pub_date=models.DateTimeField()
     isbn_num=models.CharField(max_length=13)
