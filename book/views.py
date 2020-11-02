@@ -1,9 +1,11 @@
-from django.http import HttpResponseRedirect, JsonResponse
+from django.http import HttpResponseRedirect, JsonResponse, HttpRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.db.models import Q
 from datetime import date
+import requests
+import json
 
 from django.views.generic import UpdateView
 
@@ -14,7 +16,7 @@ from book.models import Book
 class SearchBookListView(View):
     def get(self, request):
         part_books=None
-        form=SearchForm(request.GET,initial={"pub_date_to":date.today()})
+        form=SearchForm(request.GET)
         form.is_valid()
         search_input=form.cleaned_data.get('search_input')
         pub_date_since=form.cleaned_data.get('pub_date_since')
@@ -34,7 +36,7 @@ class AddUpdateBookView(View):
     def get(self,request,pk):
         book,created = Book.objects.get_or_create(pk=pk, defaults={'title': 'bla',
                                                            'author': 'bb',
-                                                           'pub_date': date(1940, 10, 1),
+                                                           'pub_date': 1940,
                                                            'pages_amount': 80,
                                                            'pub_language': 'English',
                                                            'isbn_num': '222-444-444',
@@ -55,6 +57,30 @@ class AddUpdateBookView(View):
             book.isbn_num = form.cleaned_data.get('isbn_num')
             book.save()
         return redirect(reverse("search"))
+
+def ImportBook():
+    request=requests.get("https://www.googleapis.com/books/v1/volumes?q=Hobbit").json()
+    items_amount=len(request["items"])
+
+    for item in range(items_amount):
+        title = request['items'][item]['volumeInfo']['title']
+        print(title)
+        pub_date = request['items'][item]['volumeInfo']['publishedDate']
+        page_amount = request['items'][item]['volumeInfo']['pageCount']
+        isbn_num = request['items'][item]['volumeInfo']['industryIdentifiers'][0]['identifier']
+        pub_language = request['items'][item]['volumeInfo']['language']
+        link = request['items'][item]['selfLink']
+        authors = request['items'][item]['volumeInfo']['authors']
+        Book.objects.create(title=title,author=authors,pub_date=pub_date,pages_amount=page_amount,isbn_num=isbn_num,
+                                 pub_language=pub_language,link=link)
+
+
+
+
+
+ImportBook()
+
+
 
 
 

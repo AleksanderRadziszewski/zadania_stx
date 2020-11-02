@@ -8,8 +8,8 @@ from book.models import Book
 
 class SearchForm(forms.Form):
     search_input=forms.CharField(max_length=50, required=False)
-    pub_date_since=forms.DateField(help_text="yyyy-mm-dd", required=False)
-    pub_date_to=forms.DateField(help_text="yyyy-mm-dd",required=False)
+    pub_date_since=forms.CharField(help_text="yyyy", required=False)
+    pub_date_to=forms.CharField(help_text="yyyy",required=False)
 
 class AddUpdateBookForm(forms.ModelForm):
     class Meta:
