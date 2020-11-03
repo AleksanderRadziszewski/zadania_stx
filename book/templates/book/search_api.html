@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+    <ol>
+        {% for book in book_list %}
+            <label><li>Title:{{ book.title }}</li></label><br>
+            <label>Author:{{ book.authors }}</label><br>
+            <label>Publishing language:{{ book.authors }}</label><br>
+            <label>Publishing date:{{ book.authors }}</label><br>
+            <label>Isbn number:{{ book.authors }}</label><br>
+            <label>Pages amount:{{ book.page_amount }}</label><br>
+            <label>Link:{{ book.link }}</label><br>
+        {% endfor %}
+    </ol>
+{% endblock %}
+

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <fieldset>
+    <legend>Pick type of filter</legend>
+    <input type="checkbox" name="title" value="Title">Title<br>
+    <input type="checkbox" name="author" value="Author">Author<br>
+    <input type="checkbox" name="isbn" value="Isbn">Isbn<br>
+        <br>
+    <input type="submit" value="filtr" class="btn btn-primary btn-sm mr-2">
+    </fieldset>
+</form>
+{% endblock %}

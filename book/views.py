@@ -1,15 +1,9 @@
-from django.http import HttpResponseRedirect, JsonResponse, HttpRequest
 from django.shortcuts import render, redirect
 from django.urls import reverse, reverse_lazy
 from django.views import View
 from django.db.models import Q
-from datetime import date
 import requests
-import json
-
-from django.views.generic import UpdateView
-
-from book.forms import SearchForm, AddUpdateBookForm
+from book.forms import SearchForm, AddUpdateBookForm, SearchApiForm
 from book.models import Book
 
 
@@ -58,27 +52,60 @@ class AddUpdateBookView(View):
             book.save()
         return redirect(reverse("search"))
 
-def ImportBook():
-    request=requests.get("https://www.googleapis.com/books/v1/volumes?q=Hobbit").json()
-    items_amount=len(request["items"])
+# def ImportBook():
+#     request=requests.get("https://www.googleapis.com/books/v1/volumes?q=Hobbit").json()
+#     items_amount=len(request["items"])
+#
+#     for item in range(items_amount):
+#         title = request['items'][item]['volumeInfo']['title']
+#         print(title)
+#         pub_date = request['items'][item]['volumeInfo']['publishedDate']
+#         page_amount = request['items'][item]['volumeInfo']['pageCount']
+#         isbn_num = request['items'][item]['volumeInfo']['industryIdentifiers'][0]['identifier']
+#         pub_language = request['items'][item]['volumeInfo']['language']
+#         link = request['items'][item]['selfLink']
+#         authors = request['items'][item]['volumeInfo']['authors']
+#         Book.objects.create(title=title,author=authors,pub_date=pub_date,pages_amount=page_amount,isbn_num=isbn_num,
+#                                  pub_language=pub_language,link=link)
+#
+#
+# ImportBook()
 
-    for item in range(items_amount):
-        title = request['items'][item]['volumeInfo']['title']
-        print(title)
-        pub_date = request['items'][item]['volumeInfo']['publishedDate']
-        page_amount = request['items'][item]['volumeInfo']['pageCount']
-        isbn_num = request['items'][item]['volumeInfo']['industryIdentifiers'][0]['identifier']
-        pub_language = request['items'][item]['volumeInfo']['language']
-        link = request['items'][item]['selfLink']
-        authors = request['items'][item]['volumeInfo']['authors']
-        Book.objects.create(title=title,author=authors,pub_date=pub_date,pages_amount=page_amount,isbn_num=isbn_num,
-                                 pub_language=pub_language,link=link)
+class FilterView(View):
+    def get(self,request):
+        form=SearchApiForm()
+        return render(request,"book/filter.html",{'form':form})
+
+class SearchApiView(View):
+    def get(self,request):
+        form = SearchApiForm()
+        return render(request, "book/search.html", {'form': form})
+    def post(self,request):
+        SearchApiForm(request.POST)
+        search_input=request.POST.get('search_input')
+        books = requests.get(f"https://www.googleapis.com/books/v1/volumes?q={search_input}&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y").json()
+        items_amount = len(books["items"])
+        books_list=[]
+        for item in range(items_amount):
+            title = books['items'][item]['volumeInfo']['title']
+            pub_date = books['items'][item]['volumeInfo']['publishedDate']
+            page_amount = books['items'][item]['volumeInfo']['pageCount']
+            isbn_num = books['items'][item]['volumeInfo']['industryIdentifiers'][0]['identifier']
+            pub_language = books['items'][item]['volumeInfo']['language']
+            link = books['items'][item]['selfLink']
+            authors = books['items'][item]['volumeInfo']['authors']
+            books_list.append({"title":title,
+                               "authors":(",").join(authors),
+                                "pub_date":pub_date,
+                               "page_amount":page_amount,
+                               "isbn_num":isbn_num,
+                               "pub_lnguage":pub_language,
+                               "link":link})
+
+        return render(request,"book/search_api.html",{'book_list':books_list})
 
 
 
-
-
-ImportBook()
 
 
 
