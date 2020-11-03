@@ -20,6 +20,8 @@ from book import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('search/', views.SearchBookListView.as_view(), name="search" ),
-    path('update/<int:pk>/', views.AddUpdateBookView.as_view(), name="update")
+    path('update/<int:pk>/',views.AddUpdateBookView.as_view(), name="update"),
+    path('search_api/', views.SearchApiView.as_view(), name='search api'),
+    path('filter/',views.FilterView.as_view(), name='filter')
 
 ]
