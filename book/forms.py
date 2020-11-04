@@ -12,7 +12,7 @@ class SearchForm(forms.Form):
     pub_date_to=forms.CharField(help_text="yyyy",required=False)
 
 class SearchApiForm(forms.Form):
-    search_input=forms.CharField(max_length=50)
+    search_input=forms.CharField(max_length=50, required=True)
 
 class AddUpdateBookForm(forms.ModelForm):
     class Meta:

@@ -6,6 +6,7 @@ import requests
 from book.forms import SearchForm, AddUpdateBookForm, SearchApiForm
 from book.models import Book
 
+#Exercise 1a
 
 class SearchBookListView(View):
     def get(self, request):
@@ -23,8 +24,9 @@ class SearchBookListView(View):
             part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
         else:
             part_books = Book.objects.all()
-        return render(request, 'book/books_list.html', {'part_books': part_books,
+        return render(request, 'book/books_table.html', {'part_books': part_books,
                                                         'form': form})
+#Exercise 1b
 
 class AddUpdateBookView(View):
     def get(self,request,pk):
@@ -52,29 +54,28 @@ class AddUpdateBookView(View):
             book.save()
         return redirect(reverse("search"))
 
-# def ImportBook():
-#     request=requests.get("https://www.googleapis.com/books/v1/volumes?q=Hobbit").json()
-#     items_amount=len(request["items"])
-#
-#     for item in range(items_amount):
-#         title = request['items'][item]['volumeInfo']['title']
-#         print(title)
-#         pub_date = request['items'][item]['volumeInfo']['publishedDate']
-#         page_amount = request['items'][item]['volumeInfo']['pageCount']
-#         isbn_num = request['items'][item]['volumeInfo']['industryIdentifiers'][0]['identifier']
-#         pub_language = request['items'][item]['volumeInfo']['language']
-#         link = request['items'][item]['selfLink']
-#         authors = request['items'][item]['volumeInfo']['authors']
-#         Book.objects.create(title=title,author=authors,pub_date=pub_date,pages_amount=page_amount,isbn_num=isbn_num,
-#                                  pub_language=pub_language,link=link)
+# Exercise 2
+
+def ImportBook():
+    request=requests.get("https://www.googleapis.com/books/v1/volumes?q=Hobbit").json()
+    items_amount=len(request["items"])
+
+    for item in range(items_amount):
+        title = request['items'][item]['volumeInfo']['title']
+        print(title)
+        pub_date = request['items'][item]['volumeInfo']['publishedDate']
+        page_amount = request['items'][item]['volumeInfo']['pageCount']
+        isbn_num = request['items'][item]['volumeInfo']['industryIdentifiers'][0]['identifier']
+        pub_language = request['items'][item]['volumeInfo']['language']
+        link = request['items'][item]['selfLink']
+        authors = request['items'][item]['volumeInfo']['authors']
+        Book.objects.create(title=title,author=authors,pub_date=pub_date,pages_amount=page_amount,isbn_num=isbn_num,
+                                 pub_language=pub_language,link=link)
 #
 #
 # ImportBook()
 
-class FilterView(View):
-    def get(self,request):
-        form=SearchApiForm()
-        return render(request,"book/filter.html",{'form':form})
+# Exercise 3a
 
 class SearchApiView(View):
     def get(self,request):
@@ -104,7 +105,63 @@ class SearchApiView(View):
 
         return render(request,"book/search_api.html",{'book_list':books_list})
 
+#Exercise 3b
 
+class FilterView(View):
+    def get(self,request):
+        form=SearchApiForm()
+        return render(request,"book/filter.html",{'form':form})
+    def post(self,request):
+        search_input=request.POST.get("search_input")
+        cat_value = request.POST.get("value")
+        books_list_search = []
+        if cat_value is not None:
+            book_search = requests.get(
+                f"https://www.googleapis.com/books/v1/volumes?q={search_input}&filter={cat_value}&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y").json()
+            items_amount = len(book_search["items"])
+        else:
+            book_search = requests.get(
+                f"https://www.googleapis.com/books/v1/volumes?q={search_input}&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y").json()
+            items_amount = len(book_search["items"])
+
+        for item in range(items_amount):
+
+                title = book_search['items'][item]['volumeInfo'].get('title') or "no title"
+                pub_date = book_search['items'][item]['volumeInfo'].get('publishedDate') or "no date"
+                page_amount = book_search['items'][item]['volumeInfo'].get("pageCount") or "no page count"
+                isbn_num = book_search['items'][item]['volumeInfo']['industryIdentifiers'][0].get('identifier') or "no isbn_num"
+                pub_language = book_search['items'][item]['volumeInfo'].get('language') or "no publishing language"
+                link = book_search['items'][item].get('selfLink') or "no link"
+                authors = book_search['items'][item]['volumeInfo'].get('authors') or "no authors"
+                books_list_search.append({"title": title,
+                                          "authors": (",").join(authors),
+                                          "pub_date": pub_date,
+                                          "page_amount": page_amount,
+                                          "isbn_num": isbn_num,
+                                          "pub_lnguage": pub_language,
+                                          "link": link})
+
+
+        return render(request, "book/book_search_api.html", {'book_list_searching': books_list_search})
+
+
+    # def post(self,request):
+
+
+    # def post(self,request):
+    #     checked_cat = request.POST.get("checked_id")
+    #     if checked_cat is not None:
+    #         books= requests.get(f"https://www.googleapis.com/books/v1/volumes?filter=free-ebooks&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y").json()
+    #         return render(request, "charity_donat/rest_api_category.html", {
+    #             "institutions": intstitutions
+    #         })
+    #
+    #     else:
+    #         intstitutions = Institution.objects.all()
+    #
+    #     return render(request, "charity_donat/form.html", {
+    #         "institutions": intstitutions
+    #     })
 
 
 
