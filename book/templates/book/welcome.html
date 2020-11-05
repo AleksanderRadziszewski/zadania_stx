@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+<h1>Welcome!</h1>
+
+<div style="text-align: center">
+    <h4>Pick subject:</h4>
+    <a href="{% url "search" %}">Search and filter book</a><br>
+    <a href="/update/358/">Edit and add book</a><br>
+    <a href="{% url "search api" %}">Search Api Google Book</a><br>
+    <a href="{% url "filter api" %}">Filter Api Google Book</a><br>
+    <a href="{% url "book import" %}">Book import Google Book</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,6 @@
+certifi
+django
+django-heroku
+gunicorn
+psycopg2-binary
+requests
