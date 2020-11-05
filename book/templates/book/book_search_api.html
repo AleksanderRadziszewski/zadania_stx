@@ -1,4 +1,14 @@
 {% extends "base.html" %}
 {% block content %}
-{% include "book/object_list.html" with objects=book_list_searching %}
+    <ol>
+        {% for object in book_list_searching %}
+            <li> <label>Title:{{ object.title }}</label></li>
+            <label>Author:{{ object.authors }}</label><br>
+            <label>Publishing language:{{ object.pub_lnguage }}</label><br>
+            <label>Publishing date:{{ object.pub_date }}</label><br>
+            <label>Pages amount:{{ object.page_amount }}</label><br>
+            <label>Link:{{ object.link }}</label><br>
+            <p></p>
+        {% endfor %}
+    </ol>
 {% endblock %}

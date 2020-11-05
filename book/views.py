@@ -125,43 +125,22 @@ class FilterView(View):
             items_amount = len(book_search["items"])
 
         for item in range(items_amount):
-
                 title = book_search['items'][item]['volumeInfo'].get('title') or "no title"
                 pub_date = book_search['items'][item]['volumeInfo'].get('publishedDate') or "no date"
                 page_amount = book_search['items'][item]['volumeInfo'].get("pageCount") or "no page count"
-                isbn_num = book_search['items'][item]['volumeInfo']['industryIdentifiers'][0].get('identifier') or "no isbn_num"
                 pub_language = book_search['items'][item]['volumeInfo'].get('language') or "no publishing language"
                 link = book_search['items'][item].get('selfLink') or "no link"
                 authors = book_search['items'][item]['volumeInfo'].get('authors') or "no authors"
                 books_list_search.append({"title": title,
-                                          "authors": (",").join(authors),
+                                          "authors": ("").join(authors),
                                           "pub_date": pub_date,
                                           "page_amount": page_amount,
-                                          "isbn_num": isbn_num,
                                           "pub_lnguage": pub_language,
                                           "link": link})
-
 
         return render(request, "book/book_search_api.html", {'book_list_searching': books_list_search})
 
 
-    # def post(self,request):
-
-
-    # def post(self,request):
-    #     checked_cat = request.POST.get("checked_id")
-    #     if checked_cat is not None:
-    #         books= requests.get(f"https://www.googleapis.com/books/v1/volumes?filter=free-ebooks&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y").json()
-    #         return render(request, "charity_donat/rest_api_category.html", {
-    #             "institutions": intstitutions
-    #         })
-    #
-    #     else:
-    #         intstitutions = Institution.objects.all()
-    #
-    #     return render(request, "charity_donat/form.html", {
-    #         "institutions": intstitutions
-    #     })
 
 
 
@@ -174,4 +153,3 @@ class FilterView(View):
 
 
 
-# Create your views here.
