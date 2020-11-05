@@ -2,10 +2,10 @@
 
 This project aims to provide some basic search, filter and import functionality like:
 
--filtering and searching by particular fields of Book model,
--searching and filtering by keyword in Google Api book,
--editing and adding books,
--importing books from Goofle Api book.
+-filtering and searching by particular fields of Book model
+-searching and filtering by keyword in Google Api book
+-editing and adding books
+-importing books from Goofle Api book
 
 Moreover application has been tested through unittest and  deployed on public Heroku server.
 
