@@ -1,20 +1,63 @@
-# zadanka_stx
+# Project Name: Zadania_stx
 
-Z wykorzystaniem dowolnego frameworka dostępnego dla języka Python (np. Django lub Flask) stwórz aplikację do zarządzania zbiorem książek. Aplikacja powinna pozwalać na ręczne dodawanie/edycję/usuwanie książek jak i ich importowanie korzystając z publicznie dostępnego API Google (https://www.googleapis.com/books/v1/volumes?q=Hobbit). Do warstwy wizualnej, można wykorzystać bibliotekę Bootstrap.
-# Część 1:
-Zamodeluj obiekty bazodanowe tak by zawierały pola: tytuł, autor, data publikacji, numer ISBN, liczba stron, link do okładki i język publikacji. 
-Stwórz 2 widoki:
-Widok listy wszystkich znajdujących się w bazie książek - z możliwością wyszukiwania po tytule, autorze i języku oraz zakresie dat publikacji (od - do), lista ma zawierać wszystkie informacje z modelu wyświetlone w czytelny sposób (np. w tabelce).
-Widok z formularzem pozwalającym na ręczne dodawanie/edycję książek wraz z wyświetlaniem błędów walidacji
-# Część 2:
-Stwórz widok który pozwoli na import książek według słów kluczowych z API: https://developers.google.com/books/docs/v1/using#WorkingVolumes
-wpisy tych książek muszą znaleźć się w bazie danych, która została stworzona w pierwszej części tego zadania.
-# Część 3:
-Utwórz widoki REST API, które będzie posiadało listę książek z wyszukiwaniem i filtrowaniem przy użyciu query strings, jak w punkcie 2.a. z części pierwszej
-# Część 4:
-Postaw aplikację na publicznie dostępnym serwerze - darmowe Heroku jest jedną z opcji
-# Część 5:
-Napisz testy jednostkowe oraz sprawdź kod pod względem standardów PEP8.
+This project aims to provide some basic search, filter and import functionality like:
+
+-filtering and searching by particular fields of Book model,
+-searching and filtering by keyword in Google Api book,
+-editing and adding books,
+-importing books from Goofle Api book.
+
+Moreover application has been tested through unittest and  deployed on public Heroku server.
+
+# Project Structure:
+
+### Project contains one application with one model:
+
+Book:
+
+-title,
+-author,
+-isbn_number,
+-publishing_language,
+-publishing_date,
+-pages_amount,
+-link.
+
+# Project status:
+
+Done
+
+# Usage illustrations:
+
+### 1. Books model records
+a) Before filtering
+<img width="1274" alt="Zrzut ekranu 2020-11-5 o 19 23 36" src="https://user-images.githubusercontent.com/56914063/98280991-77312200-1f9c-11eb-97f7-0b558200b0ee.png">
+
+b)after filtering
+<img width="1280" alt="Zrzut ekranu 2020-11-5 o 23 07 53" src="https://user-images.githubusercontent.com/56914063/98301870-c63a7f80-1fbb-11eb-89bb-2f43e6c2d9fb.png">
+### 2.Filtering by Google Api book
+a)Only by search
+<img width="1280" alt="Zrzut ekranu 2020-11-5 o 23 06 14" src="https://user-images.githubusercontent.com/56914063/98302040-10bbfc00-1fbc-11eb-947f-af8cf34555b5.png">
+
+b)By search and filter type
+<img width="1280" alt="Zrzut ekranu 2020-11-5 o 23 06 00" src="https://user-images.githubusercontent.com/56914063/98302159-36490580-1fbc-11eb-8065-d1419d583c99.png">
+
+### 3. Books import from Google Api
+a) before
+![Zrzut ekranu 2020-11-5 o 23 13 34 (2)](https://user-images.githubusercontent.com/56914063/98302429-a6578b80-1fbc-11eb-8424-9eceb4f00e73.png)
+
+b)after
+![Zrzut ekranu 2020-11-5 o 23 25 35](https://user-images.githubusercontent.com/56914063/98303350-3fd36d00-1fbe-11eb-8146-9c83887c070f.png)
+
+### 4.Heroku
+![Zrzut ekranu 2020-11-5 o 23 19 26](https://user-images.githubusercontent.com/56914063/98302913-90969600-1fbd-11eb-9474-32b8d9e57339.png)
+![Zrzut ekranu 2020-11-5 o 23 24 22](https://user-images.githubusercontent.com/56914063/98303264-203c4480-1fbe-11eb-927b-d88e924630eb.png)
+
+# Sources:
+
+https://developers.google.com/books
+https://docs.djangoproject.com/en/3.1/
+https://stackoverflow.com/
+https://dashboard.heroku.com/
 
 
-Kod musi być napisany zgodnie ze standardami PEP8 oraz posiadać testy jednostkowe. Przy odsyłaniu zadania, prosimy o udostępnienie adresu www na którym jest dostępna aplikacja oraz o adres do publicznego repozytorium, tak aby nasi rekruterzy techniczni byli w stanie zajrzeć w kod.
