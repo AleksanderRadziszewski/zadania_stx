@@ -1,12 +1,11 @@
+{% extends "base.html" %}
 {% block content %}
-
     <form method="post" action="">
         {% csrf_token %}
         {{ form.as_p }}
-        <input id="search_api" type="submit" value="Find" class="btn btn-primary btn-sm mr-2">
+        <input id="search_import" type="submit" value="Find" class="btn btn-primary btn-sm mr-2">
     </form>
     <div id="search_list">
 
     </div>
-
 {% endblock %}

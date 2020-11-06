@@ -19,23 +19,26 @@ class WelcomeView(View):
 
 class SearchBookListView(View):
     def get(self, request):
-        part_books = None
-        form = SearchForm(request.GET)
-        form.is_valid()
-        search_input = form.cleaned_data.get("search_input")
-        pub_date_since = form.cleaned_data.get("pub_date_since")
-        pub_date_to = form.cleaned_data.get("pub_date_to")
-        if search_input is not None:
-            part_books = Book.objects.all().filter(
-                Q(title__icontains=search_input)
-                | Q(author__icontains=search_input)
-                | Q(pub_language__icontains=search_input)
-            )
-        elif pub_date_to and pub_date_since is not None:
-            part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
-        else:
-            part_books = Book.objects.all()
-        return render(request, "book/books_table.html", {"part_books": part_books, "form": form})
+        form = SearchForm()
+        return render(request, "book/form.html", {"form": form})
+
+    def post(self, request):
+        form = SearchForm(request.POST)
+        if form.is_valid():
+            search_input = form.cleaned_data.get("search_input")
+            pub_date_since = form.cleaned_data.get("pub_date_since")
+            pub_date_to = form.cleaned_data.get("pub_date_to")
+            if search_input and pub_date_to and pub_date_since is not None:
+                part_books = Book.objects.all().filter(
+                    Q(title__icontains=search_input)
+                    | Q(author__icontains=search_input)
+                    | Q(pub_language__icontains=search_input)
+                )
+                part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
+                return render(request, "book/books_table.html", {"part_books": part_books, "form": form})
+            else:
+                part_books = Book.objects.all()
+                return render(request, "book/books_table.html", {"part_books": part_books, "form": form})
 
 
 # Exercise 1b
@@ -83,7 +86,7 @@ class AddUpdateBookView(View):
 class BooksImportView(View):
     def get(self, request):
         form = SearchApiForm()
-        return render(request, "book/search.html", {"form": form})
+        return render(request, "book/search_import.html", {"form": form})
 
     def post(self, request):
         search_input = request.POST.get("search_input")
@@ -115,7 +118,7 @@ class BooksImportView(View):
 class SearchApiView(View):
     def get(self, request):
         form = SearchApiForm()
-        return render(request, "book/search.html", {"form": form})
+        return render(request, "book/book_search_api.html", {"form": form})
 
     def post(self, request):
         SearchApiForm(request.POST)
@@ -146,7 +149,7 @@ class SearchApiView(View):
                 }
             )
 
-        return render(request, "book/search_api.html", {"book_list": books_list})
+        return render(request, "book/book_list.html", {"book_list": books_list})
 
 
 # Exercise 3b
@@ -169,8 +172,8 @@ class FilterView(View):
             items_amount = len(book_search["items"])
         else:
             book_search = requests.get(
-                f"https://www.googleapis.com/books/v1/volumes?q={search_input}&"
-                f"key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y"
+                f"https://www.googleapis.com/books/v1/volumes?q="
+                f"{search_input}&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y"
             ).json()
             items_amount = len(book_search["items"])
 
@@ -184,7 +187,7 @@ class FilterView(View):
             books_list_search.append(
                 {
                     "title": title,
-                    "authors": ("").join(authors),
+                    "authors": ",".join(authors),
                     "pub_date": pub_date,
                     "page_amount": page_amount,
                     "pub_lnguage": pub_language,
@@ -192,4 +195,4 @@ class FilterView(View):
                 }
             )
 
-        return render(request, "book/book_search_api.html", {"book_list_searching": books_list_search})
+        return render(request, "book/filter_book.html", {"book_list_search": books_list_search})
