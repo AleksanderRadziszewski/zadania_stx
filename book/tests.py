@@ -58,7 +58,7 @@ class TestUpdateView(TestCase):
         self.assertTemplateNotUsed(response, "book/filter.html")
 
     def test_update_add_POST_true(self):
-        response = self.client.post(self.add_update)
+        response = self.client.post(self.add_update,follow=True)
         self.assertEqual(response.status_code, 200)
 
     def test_update_add_POST_false(self):

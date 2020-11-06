@@ -77,7 +77,7 @@ class AddUpdateBookView(View):
             book.link = form.cleaned_data.get("link")
             book.isbn_num = form.cleaned_data.get("isbn_num")
             book.save()
-        return redirect(reverse("search"))
+        return redirect(reverse("update",kwargs={"pk":pk}))
 
 
 # Exercise 2
@@ -90,25 +90,29 @@ class BooksImportView(View):
 
     def post(self, request):
         search_input = request.POST.get("search_input")
-        request = requests.get(f"https://www.googleapis.com/books/v1/volumes?q={search_input}").json()
-        items_amount = len(request["items"])
+        request_api = requests.get(f"https://www.googleapis.com/books/v1/volumes?q={search_input}").json()
+        items_amount = len(request_api["items"])
         for item in range(items_amount):
-            title = request["items"][item]["volumeInfo"]["title"]
-            pub_date = request["items"][item]["volumeInfo"]["publishedDate"]
-            page_amount = request["items"][item]["volumeInfo"]["pageCount"]
-            isbn_num = request["items"][item]["volumeInfo"]["industryIdentifiers"][0]["identifier"]
-            pub_language = request["items"][item]["volumeInfo"]["language"]
-            link = request["items"][item]["selfLink"]
-            authors = request["items"][item]["volumeInfo"]["authors"]
-            Book.objects.create(
-                title=title,
-                author=",".join(authors),
-                pub_date=pub_date,
-                pages_amount=page_amount,
-                isbn_num=isbn_num,
-                pub_language=pub_language,
-                link=link,
-            )
+            try:
+                title = request_api["items"][item]["volumeInfo"]["title"]
+                pub_date = request_api["items"][item]["volumeInfo"]["publishedDate"]
+                page_amount = request_api["items"][item]["volumeInfo"]["pageCount"]
+                pub_language = request_api["items"][item]["volumeInfo"]["language"]
+                link = request_api["items"][item]["selfLink"]
+                authors = request_api["items"][item]["volumeInfo"]["authors"]
+                isbn_num=request_api["items"][item]["volumeInfo"]["industryIdentifiers"][0]["identifier"]
+                Book.objects.create(
+                    title=title,
+                    author=",".join(authors),
+                    pub_date=pub_date,
+                    pages_amount=page_amount,
+                    isbn_num=isbn_num,
+                    pub_language=pub_language,
+                    link=link,
+                )
+            except KeyError:
+                    pass
+
         return HttpResponse("")
 
 
@@ -130,24 +134,27 @@ class SearchApiView(View):
         items_amount = len(books["items"])
         books_list = []
         for item in range(items_amount):
-            title = books["items"][item]["volumeInfo"]["title"]
-            pub_date = books["items"][item]["volumeInfo"]["publishedDate"]
-            page_amount = books["items"][item]["volumeInfo"]["pageCount"]
-            isbn_num = books["items"][item]["volumeInfo"]["industryIdentifiers"][0]["identifier"]
-            pub_language = books["items"][item]["volumeInfo"]["language"]
-            link = books["items"][item]["selfLink"]
-            authors = books["items"][item]["volumeInfo"]["authors"]
-            books_list.append(
-                {
-                    "title": title,
-                    "authors": (",").join(authors),
-                    "pub_date": pub_date,
-                    "page_amount": page_amount,
-                    "isbn_num": isbn_num,
-                    "pub_lnguage": pub_language,
-                    "link": link,
-                }
-            )
+             try:
+                 title = books["items"][item]["volumeInfo"]["title"]
+                 pub_date = books["items"][item]["volumeInfo"]["publishedDate"]
+                 page_amount = books["items"][item]["volumeInfo"]["pageCount"]
+                 pub_language = books["items"][item]["volumeInfo"]["language"]
+                 link = books["items"][item]["selfLink"]
+                 authors = books["items"][item]["volumeInfo"]["authors"]
+                 isbn_num=books["items"][item]["volumeInfo"]["industryIdentifiers"][0].get("identifier")
+                 books_list.append(
+
+                   {
+                       "title": title,
+                       "authors": ",".join(authors),
+                       "pub_date": pub_date,
+                       "page_amount": page_amount,
+                       "isbn_num": isbn_num,
+                       "pub_lnguage": pub_language,
+                       "link": link,
+                   })
+             except KeyError:
+                    pass
 
         return render(request, "book/book_list.html", {"book_list": books_list})
 
