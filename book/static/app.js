@@ -12,6 +12,7 @@ function getCookie(name) {
     }
     return cookieValue;
 }
+
 function search() {
     var csrftoken = getCookie('csrftoken');
     $.post({
@@ -32,63 +33,82 @@ function search() {
 
         });
 
-    $(document).ready(function (event) {
-        event.preventDefault();
-        $("#search").click(search);
 
-    })
 }
+
+$(document).ready(function (event) {
+    event.preventDefault();
+    $("#search_api").click(search);
+
+});
 
 function filter(event) {
     event.preventDefault();
     var csrftoken = getCookie('csrftoken');
+    var search_input = $("#id_search_input").val();
     var checkboxes_button = document.querySelectorAll(".my-checkbox");
     checkboxes_button.forEach(function (checkbox) {
         if (checkbox.checked) {
-            var value =checkbox.value;
-            var search_input=$("#id_search_input").val();
+            var value = checkbox.value;
+
             $.post({
                 url: "/filter/",
-                data: {csrfmiddlewaretoken:csrftoken,
-                        value:value,
-                        search_input:search_input,
-                        }
-            }).done(function (response) {
-                console.log("poszlo");
-                $("#search_list").html(response)
-
+                data: {
+                    csrfmiddlewaretoken: csrftoken,
+                    value: value,
+                    search_input: search_input,
+                }
             })
+        } else {
+            $.post({
+                url: "/filter/",
+                data: {
+                    csrfmiddlewaretoken: csrftoken,
+                    value: value,
+                    search_input: search_input,
+                }
+            })
+                .done(function (response) {
+                    console.log("poszlo");
+                    $("#search_list").html(response)
+
+                })
                 .fail(function (e) {
                     alert("nie poszlo");
                     console.log(e)
-                });
+                })
+
+
         }
     })
 }
-                $(document).ready(function (event) {
-                    $("#filter").click(filter);
-                });
+
+$(document).ready(function () {
+    $("#filter").click(filter);
+});
 
 function book_import(event) {
     event.preventDefault();
     var csrftoken = getCookie('csrftoken');
-            var search_input=$("#id_search_input").val();
-            $.post({
-                url: "/book_import/",
-                data: {csrfmiddlewaretoken:csrftoken,
-                        search_input:search_input,
-                        }
-            }).done(function () {
-                console.log("poszlo");
-                $("#search_list").text("Books have already imported")
+    var search_input = $("#id_search_input").val();
+    $.post({
+        url: "/book_import/",
+        data: {
+            csrfmiddlewaretoken: csrftoken,
+            search_input: search_input,
+        }
+    }).done(function () {
+        console.log("poszlo");
+        $("#search_list").text("Books have already imported")
 
-            })
-                .fail(function (e) {
-                    alert("nie poszlo");
-                    console.log(e)
+    })
+        .fail(function (e) {
+            alert("nie poszlo");
+            console.log(e)
 
-                });
+        });
 }
-            $(document).ready(function (event) {
-                $("#search").click(book_import);
-            });
+
+$(document).ready(function (event) {
+    $("#search_import").click(book_import);
+});

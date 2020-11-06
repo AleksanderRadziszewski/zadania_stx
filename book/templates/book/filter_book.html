@@ -1,0 +1,13 @@
+{% block content %}
+<ol>
+    {% for object in book_list_search %}
+        <li><label>Title:{{ object.title }}</label></li>
+        <label>Author:{{ object.authors }}</label><br>
+        <label>Publishing language:{{ object.pub_lnguage }}</label><br>
+        <label>Publishing date:{{ object.pub_date }}</label><br>
+        <label>Pages amount:{{ object.page_amount }}</label><br>
+        <label>Link:{{ object.link }}</label><br>
+        <p></p>
+    {% endfor %}
+</ol>
+{% endblock %}

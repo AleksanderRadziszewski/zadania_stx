@@ -1,9 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <form>
-        {{ form.as_p }}
-        <input type="submit" value="Search" class="btn btn-primary btn-sm mr-2">
-    </form>
+<a href="{% url "search" %}"> <- search</a>
 
     <table class="table table-striped table-bordered">
         <tr>

@@ -2,10 +2,7 @@
 {% block content %}
     <form method="post" action="">
         {% csrf_token %}
-        {{ form }}
+        {{ form.as_p }}
         <input id="search" type="submit" value="Find" class="btn btn-primary btn-sm mr-2">
     </form>
-    <div id="search_list">
-
-    </div>
 {% endblock %}
