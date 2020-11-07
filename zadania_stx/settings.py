@@ -87,7 +87,7 @@ DATABASES = {
     }
 }
 
-DATABASES['default'] = dj_database_url.config(conn_max_age=600)
+# DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 
 
 # Password validation
@@ -127,6 +127,6 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATIC_DIRS = [os.path.join(BASE_DIR, "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfilies")
-STATICFILES_STORAGE = "whitenoise.django.GzipManifestStaticFilesStorage"
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 django_heroku.settings(locals())
 
