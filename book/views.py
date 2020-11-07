@@ -197,9 +197,9 @@ class FilterView(View):
                     "authors": ",".join(authors),
                     "pub_date": pub_date,
                     "page_amount": page_amount,
-                    "pub_lnguage": pub_language,
+                    "pub_language": pub_language,
                     "link": link,
                 }
             )
 
-        return render(request, "book/filter_book.html", {"book_list_search": books_list_search})
+        return render(request, "book/filter_book_api.html", {"books_list_search": books_list_search})

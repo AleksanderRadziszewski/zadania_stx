@@ -110,7 +110,7 @@ class TestFilterApi(TestCase):
     def test_filter_api_POST_true(self):
         response = self.client.post(self.filter_api)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "book/filter_book.html")
+        self.assertTemplateUsed(response, "book/filter_book_api.html")
 
     def test_filter_api_POST_false(self):
         response = self.client.post(self.filter_api)
