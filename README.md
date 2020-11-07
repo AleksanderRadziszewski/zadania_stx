@@ -53,11 +53,12 @@ b)after filtering
 
 ### Import
 
-![Zrzut ekranu 2020-11-5 o 23 24 22](https://user-images.githubusercontent.com/56914063/98303264-203c4480-1fbe-11eb-927b-d88e924630eb.png)
+![Zrzut ekranu 2020-11-7 o 13 16 43](https://user-images.githubusercontent.com/56914063/98441259-795ec200-20fd-11eb-9e29-a4529d7032c9.png)
 
 ### Filter
 
-![Zrzut ekranu 2020-11-5 o 23 25 35](https://user-images.githubusercontent.com/56914063/98303350-3fd36d00-1fbe-11eb-8146-9c83887c070f.png)
+![Zrzut ekranu 2020-11-7 o 13 22 50](https://user-images.githubusercontent.com/56914063/98441270-90051900-20fd-11eb-8faf-73ab96cf8d7e.png)
+
 
 # Sources:
 
