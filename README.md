@@ -30,41 +30,44 @@ Ongoing
 # Usage illustrations:
 
 ### 1. Books model records
-a) Before filtering
-<img width="1274" alt="Zrzut ekranu 2020-11-5 o 19 23 36" src="https://user-images.githubusercontent.com/56914063/98280991-77312200-1f9c-11eb-97f7-0b558200b0ee.png">
+a) empty title
 
-b)after filtering
-<img width="1280" alt="Zrzut ekranu 2020-11-5 o 23 07 53" src="https://user-images.githubusercontent.com/56914063/98301870-c63a7f80-1fbb-11eb-89bb-2f43e6c2d9fb.png">
-## 2.Filtering by Google Api book
-# a)Only by search
+![empty_title](https://user-images.githubusercontent.com/56914063/98466749-c57b3680-21d1-11eb-98fd-af661331fae2.png)
 
-<img width="1280" alt="Zrzut ekranu 2020-11-5 o 23 06 14" src="https://user-images.githubusercontent.com/56914063/98302040-10bbfc00-1fbc-11eb-947f-af8cf34555b5.png">
+b)filtering only by author
 
-# b)By search and filter type
-<img width="1280" alt="Zrzut ekranu 2020-11-5 o 23 06 00" src="https://user-images.githubusercontent.com/56914063/98302159-36490580-1fbc-11eb-8065-d1419d583c99.png">
+![filtering_author](https://user-images.githubusercontent.com/56914063/98466753-c7dd9080-21d1-11eb-9e08-8cd359da4909.png)
+
+c)filtering by publishing language
+
+![pub_lang](https://user-images.githubusercontent.com/56914063/98466754-c8762700-21d1-11eb-9cc2-74c61303f739.png)
+
+d)filtering by publishing dates and title
+
+![search_dates](https://user-images.githubusercontent.com/56914063/98466755-c90ebd80-21d1-11eb-8a7c-97f617595d8f.png)
+
+e)filtering by only dates
+
+![filter_by_date](https://user-images.githubusercontent.com/56914063/98466994-42f37680-21d3-11eb-8c6f-4202db72f61a.png)
 
 
-## 3.Heroku
+## 2.Heroku
 
-### Import
+### Import Api
 
 ![Zrzut ekranu 2020-11-7 o 13 16 43](https://user-images.githubusercontent.com/56914063/98441259-795ec200-20fd-11eb-9e29-a4529d7032c9.png)
 
-### Filter
 
-![Zrzut ekranu 2020-11-7 o 13 22 50](https://user-images.githubusercontent.com/56914063/98441270-90051900-20fd-11eb-8faf-73ab96cf8d7e.png)
+### Filtering by Google Api book
+# a)Only search
 
-### Search
+<img width="1280" alt="Zrzut ekranu 2020-11-5 o 23 06 14" src="https://user-images.githubusercontent.com/56914063/98302040-10bbfc00-1fbc-11eb-947f-af8cf34555b5.png">
 
-![Zrzut ekranu 2020-11-7 o 13 41 24](https://user-images.githubusercontent.com/56914063/98441497-f9d1f280-20fe-11eb-84e8-794582f74903.png)
+# b)search and checked filter
+<img width="1280" alt="Zrzut ekranu 2020-11-5 o 23 06 00" src="https://user-images.githubusercontent.com/56914063/98302159-36490580-1fbc-11eb-8065-d1419d583c99.png">
 
-### Search and filter using view
 
-a) Search
 
-![Zrzut ekranu 2020-11-7 o 13 46 35](https://user-images.githubusercontent.com/56914063/98441602-b1670480-20ff-11eb-90b7-b9eddca2aaa8.png)
-
-b) Filter by publishing date
 
 
 
