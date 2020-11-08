@@ -84,13 +84,16 @@ $(document).ready(function () {
     $("#filter").click(filter);
 });
 
-function search(event) {
+function search_api(event) {
         event.preventDefault();
     var csrftoken = getCookie('csrftoken');
+    var search_input=$("#id_search_input").val();
+    console.log(search_input);
     $.post({
         url: "/search_api/",
         data: {
             csrfmiddlewaretoken: csrftoken,
+            search_input:search_input
         }
     }).done(function (repsonse) {
         var $result_list = $("#search_list");
@@ -107,7 +110,7 @@ function search(event) {
 }
 
 $(document).ready(function () {
-    $("#search_api").click(search);
+    $("#search_api").click(search_api);
 
 });
 
