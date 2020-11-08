@@ -200,18 +200,18 @@ class FilterView(View):
         search_input = request.POST.get("search_input")
         cat_value = request.POST.get("value")
         books_list_search = []
-        if cat_value is not None:
+        if cat_value:
             book_search = requests.get(
                 f"https://www.googleapis.com/books/v1/volumes?q={search_input}&"
                 f"filter={cat_value}&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y"
             ).json()
             items_amount = len(book_search["items"])
-        else:
-            book_search = requests.get(
-                f"https://www.googleapis.com/books/v1/volumes?q="
-                f"{search_input}&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y"
-            ).json()
-            items_amount = len(book_search["items"])
+
+        book_search = requests.get(
+            f"https://www.googleapis.com/books/v1/volumes?q="
+            f"{search_input}&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y"
+        ).json()
+        items_amount = len(book_search["items"])
 
         for item in range(items_amount):
             title = book_search["items"][item]["volumeInfo"].get("title") or "no title"
