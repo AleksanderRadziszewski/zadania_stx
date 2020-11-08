@@ -47,6 +47,7 @@ class SearchBookListView(View):
                                                                  "part_books": part_books})
             else:
                 part_books = Book.objects.all()
+                part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
             return render(request, "book/books_table.html", {"form": form,
                                                                  "part_books": part_books})
         return render(request, "book/books_table.html", {"form": form})
@@ -168,7 +169,6 @@ class SearchApiView(View):
                     })
             except KeyError:
                 pass
-
         return render(request, "book/book_list.html", {"book_list": books_list})
 
 
