@@ -1,10 +1,11 @@
+from datetime import date
 import requests
-from django.db.models import Q
+from django.core.exceptions import ValidationError
+from django.db.models import Q, Min
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 from django.views import View
-
 from book.forms import AddUpdateBookForm, SearchApiForm, SearchForm
 from book.models import Book
 
@@ -19,7 +20,7 @@ class WelcomeView(View):
 
 class SearchBookListView(View):
     def get(self, request):
-        form = SearchForm()
+        form = SearchForm(initial={"pub_date_to": date.today().year})
         return render(request, "book/form.html", {"form": form})
 
     def post(self, request):
@@ -28,17 +29,28 @@ class SearchBookListView(View):
             search_input = form.cleaned_data.get("search_input")
             pub_date_since = form.cleaned_data.get("pub_date_since")
             pub_date_to = form.cleaned_data.get("pub_date_to")
-            if search_input and pub_date_to and pub_date_since is not None:
+            if search_input:
                 part_books = Book.objects.all().filter(
                     Q(title__icontains=search_input)
                     | Q(author__icontains=search_input)
                     | Q(pub_language__icontains=search_input)
                 )
-                part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
-                return render(request, "book/books_table.html", {"part_books": part_books, "form": form})
+                if pub_date_since and pub_date_to:
+                    part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
+                elif not pub_date_to:
+                    pub_date_to = date.today().year
+                    part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
+                elif not pub_date_since:
+                    pub_date_since = part_books.aggregate(Min('pub_date')).get("pub_date__min")
+                    part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
+                return render(request, "book/books_table.html", {"form": form,
+                                                                 "part_books": part_books})
             else:
                 part_books = Book.objects.all()
-                return render(request, "book/books_table.html", {"part_books": part_books, "form": form})
+                part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
+            return render(request, "book/books_table.html", {"form": form,
+                                                                 "part_books": part_books})
+        return render(request, "book/books_table.html", {"form": form})
 
 
 # Exercise 1b
@@ -56,9 +68,9 @@ class AddUpdateBookView(View):
                 "pub_language": "English",
                 "isbn_num": "222-444-444",
                 "link": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.barnesandnoble.com%"
-                "2Fw%2Fharry-potter-i-komnata-tajemnic-j-k-rowling%2F1116540470&psig="
-                "AOvVaw3la-vaVjRPIpCZgD7o0T3q&ust=1604313551353000&source=images&cd=vfe&ved="
-                "0CAIQjRxqFwoTCJDh6OyT4ewCFQAAAAAdAAAAABAG",
+                        "2Fw%2Fharry-potter-i-komnata-tajemnic-j-k-rowling%2F1116540470&psig="
+                        "AOvVaw3la-vaVjRPIpCZgD7o0T3q&ust=1604313551353000&source=images&cd=vfe&ved="
+                        "0CAIQjRxqFwoTCJDh6OyT4ewCFQAAAAAdAAAAABAG",
             },
         )
 
@@ -77,7 +89,9 @@ class AddUpdateBookView(View):
             book.link = form.cleaned_data.get("link")
             book.isbn_num = form.cleaned_data.get("isbn_num")
             book.save()
-        return redirect(reverse("update",kwargs={"pk":pk}))
+        else:
+            raise ValidationError("Invalid form")
+        return redirect(reverse("update", kwargs={"pk": pk}))
 
 
 # Exercise 2
@@ -100,7 +114,7 @@ class BooksImportView(View):
                 pub_language = request_api["items"][item]["volumeInfo"]["language"]
                 link = request_api["items"][item]["selfLink"]
                 authors = request_api["items"][item]["volumeInfo"]["authors"]
-                isbn_num=request_api["items"][item]["volumeInfo"]["industryIdentifiers"][0]["identifier"]
+                isbn_num = request_api["items"][item]["volumeInfo"]["industryIdentifiers"][0]["identifier"]
                 Book.objects.create(
                     title=title,
                     author=",".join(authors),
@@ -111,7 +125,7 @@ class BooksImportView(View):
                     link=link,
                 )
             except KeyError:
-                    pass
+                pass
 
         return HttpResponse("")
 
@@ -134,28 +148,27 @@ class SearchApiView(View):
         items_amount = len(books["items"])
         books_list = []
         for item in range(items_amount):
-             try:
-                 title = books["items"][item]["volumeInfo"]["title"]
-                 pub_date = books["items"][item]["volumeInfo"]["publishedDate"]
-                 page_amount = books["items"][item]["volumeInfo"]["pageCount"]
-                 pub_language = books["items"][item]["volumeInfo"]["language"]
-                 link = books["items"][item]["selfLink"]
-                 authors = books["items"][item]["volumeInfo"]["authors"]
-                 isbn_num=books["items"][item]["volumeInfo"]["industryIdentifiers"][0].get("identifier")
-                 books_list.append(
+            try:
+                title = books["items"][item]["volumeInfo"]["title"]
+                pub_date = books["items"][item]["volumeInfo"]["publishedDate"]
+                page_amount = books["items"][item]["volumeInfo"]["pageCount"]
+                pub_language = books["items"][item]["volumeInfo"]["language"]
+                link = books["items"][item]["selfLink"]
+                authors = books["items"][item]["volumeInfo"]["authors"]
+                isbn_num = books["items"][item]["volumeInfo"]["industryIdentifiers"][0].get("identifier")
+                books_list.append(
 
-                   {
-                       "title": title,
-                       "authors": ",".join(authors),
-                       "pub_date": pub_date,
-                       "page_amount": page_amount,
-                       "isbn_num": isbn_num,
-                       "pub_lnguage": pub_language,
-                       "link": link,
-                   })
-             except KeyError:
-                    pass
-
+                    {
+                        "title": title,
+                        "authors": ",".join(authors),
+                        "pub_date": pub_date,
+                        "page_amount": page_amount,
+                        "isbn_num": isbn_num,
+                        "pub_lnguage": pub_language,
+                        "link": link,
+                    })
+            except KeyError:
+                pass
         return render(request, "book/book_list.html", {"book_list": books_list})
 
 
