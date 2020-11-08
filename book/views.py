@@ -47,7 +47,7 @@ class SearchBookListView(View):
                                                                  "part_books": part_books})
             else:
                 part_books = Book.objects.all()
-                return render(request, "book/books_table.html", {"form": form,
+            return render(request, "book/books_table.html", {"form": form,
                                                                  "part_books": part_books})
         return render(request, "book/books_table.html", {"form": form})
 
