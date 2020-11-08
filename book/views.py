@@ -48,12 +48,19 @@ class SearchBookListView(View):
                 elif not pub_date_since:
                     pub_date_since = part_books.aggregate(Min('pub_date')).get("pub_date__min")
                     part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
+
                 return render(request, "book/books_table.html", {"form": form,
                                                                  "part_books": part_books,
                                                                  "new_book":new_book})
-            else:
+
+            elif not pub_date_to and not pub_date_since and not search_input:
                 part_books = Book.objects.all()
-                part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
+                return render(request, "book/books_table.html", {"form": form,
+                                                                 "new_book": new_book,
+                                                                 "part_books": part_books})
+
+            part_books = Book.objects.all()
+            part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
             return render(request, "book/books_table.html", {"form": form,
                                                              "new_book":new_book,
                                                              "part_books": part_books})
