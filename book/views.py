@@ -214,21 +214,26 @@ class FilterView(View):
         items_amount = len(book_search["items"])
 
         for item in range(items_amount):
-            title = book_search["items"][item]["volumeInfo"].get("title") or "no title"
-            pub_date = book_search["items"][item]["volumeInfo"].get("publishedDate") or "no date"
-            page_amount = book_search["items"][item]["volumeInfo"].get("pageCount") or "no page count"
-            pub_language = book_search["items"][item]["volumeInfo"].get("language") or "no publishing language"
-            link = book_search["items"][item].get("selfLink") or "no link"
-            authors = book_search["items"][item]["volumeInfo"].get("authors") or "no authors"
-            books_list_search.append(
-                {
-                    "title": title,
-                    "authors": ",".join(authors),
-                    "pub_date": pub_date,
-                    "page_amount": page_amount,
-                    "pub_language": pub_language,
-                    "link": link,
-                }
-            )
+            try:
+                title = book_search["items"][item]["volumeInfo"].get("title") or "no title"
+                pub_date = book_search["items"][item]["volumeInfo"].get("publishedDate") or "no date"
+                page_amount = book_search["items"][item]["volumeInfo"].get("pageCount") or "no page count"
+                isbn_num = book_search["items"][item]["volumeInfo"]["industryIdentifiers"][0].get("identifier")
+                pub_language = book_search["items"][item]["volumeInfo"].get("language") or "no publishing language"
+                link = book_search["items"][item].get("selfLink") or "no link"
+                authors = book_search["items"][item]["volumeInfo"].get("authors") or "no authors"
+                books_list_search.append(
+                    {
+                        "title": title,
+                        "authors": ",".join(authors),
+                        "pub_date": pub_date,
+                        "isbn_num": isbn_num,
+                        "page_amount": page_amount,
+                        "pub_language": pub_language,
+                        "link": link,
+                    }
+                )
+            except KeyError:
+                pass
 
         return render(request, "book/filter_book_api.html", {"books_list_search": books_list_search})
