@@ -1,14 +1,31 @@
-function search(event) {
-        event.preventDefault();
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+function book_import(event) {
+    event.preventDefault();
     var csrftoken = getCookie('csrftoken');
+    var search_input = $("#id_search_input").val();
     $.post({
-        url: "/search_api/",
+        url: "/book_import/",
         data: {
             csrfmiddlewaretoken: csrftoken,
+            search_input: search_input,
         }
-    }).done(function (repsonse) {
-        var $result_list = $("#search_list");
-        $result_list.html(repsonse)
+    }).done(function () {
+        console.log("poszlo");
+        $("#search_list").text("Books have already imported")
 
     })
         .fail(function (e) {
@@ -16,13 +33,10 @@ function search(event) {
             console.log(e)
 
         });
-
-
 }
 
 $(document).ready(function () {
-    $("#search_api").click(search);
-
+    $("#search_import").click(book_import);
 });
 
 function filter(event) {
@@ -70,19 +84,17 @@ $(document).ready(function () {
     $("#filter").click(filter);
 });
 
-function book_import(event) {
-    event.preventDefault();
+function search(event) {
+        event.preventDefault();
     var csrftoken = getCookie('csrftoken');
-    var search_input = $("#id_search_input").val();
     $.post({
-        url: "/book_import/",
+        url: "/search_api/",
         data: {
             csrfmiddlewaretoken: csrftoken,
-            search_input: search_input,
         }
-    }).done(function () {
-        console.log("poszlo");
-        $("#search_list").text("Books have already imported")
+    }).done(function (repsonse) {
+        var $result_list = $("#search_list");
+        $result_list.html(repsonse)
 
     })
         .fail(function (e) {
@@ -90,8 +102,12 @@ function book_import(event) {
             console.log(e)
 
         });
+
+
 }
 
 $(document).ready(function () {
-    $("#search_import").click(book_import);
+    $("#search_api").click(search);
+
 });
+

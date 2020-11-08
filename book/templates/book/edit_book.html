@@ -3,6 +3,9 @@
     <form method="post" action="">
         {% csrf_token %}
         {{ form.as_p }}
-        <input type="submit" value="save" class="btn btn-primary btn-sm mr-2">
+        <span>
+            <input id="save" type="submit" value="save" class="btn btn-primary btn-sm mr-2">
+            <button name="add" class="btn btn-primary btn-sm mr-2">add</button>
+        </span>
     </form>
 {% endblock %}
