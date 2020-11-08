@@ -1,7 +1,7 @@
 from datetime import date
 import requests
 from django.core.exceptions import ValidationError
-from django.db.models import Q, Min
+from django.db.models import Q, Min, Max
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
@@ -21,10 +21,15 @@ class WelcomeView(View):
 class SearchBookListView(View):
     def get(self, request):
         form = SearchForm(initial={"pub_date_to": date.today().year})
-        return render(request, "book/form.html", {"form": form})
+        books = Book.objects.all()
+        new_book = books.aggregate(Max('pk')).get("pk__max")+1
+        return render(request, "book/form.html", {"form": form,
+                                                  "new_book":new_book})
 
     def post(self, request):
         form = SearchForm(request.POST)
+        books = Book.objects.all()
+        new_book = books.aggregate(Max('pk')).get("pk__max") + 1
         if form.is_valid():
             search_input = form.cleaned_data.get("search_input")
             pub_date_since = form.cleaned_data.get("pub_date_since")
@@ -44,12 +49,15 @@ class SearchBookListView(View):
                     pub_date_since = part_books.aggregate(Min('pub_date')).get("pub_date__min")
                     part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
                 return render(request, "book/books_table.html", {"form": form,
-                                                                 "part_books": part_books})
+                                                                 "part_books": part_books,
+                                                                 "new_book":new_book})
             else:
                 part_books = Book.objects.all()
                 part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
             return render(request, "book/books_table.html", {"form": form,
-                                                                 "part_books": part_books})
+                                                             "new_book":new_book,
+                                                             "part_books": part_books})
+
         return render(request, "book/books_table.html", {"form": form})
 
 
@@ -75,6 +83,7 @@ class AddUpdateBookView(View):
         )
 
         form = AddUpdateBookForm(instance=book)
+
         return render(request, "book/edit_book.html", {"form": form})
 
     def post(self, request, pk):

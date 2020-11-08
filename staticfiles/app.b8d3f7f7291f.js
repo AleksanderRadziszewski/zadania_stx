@@ -13,18 +13,19 @@ function getCookie(name) {
     return cookieValue;
 }
 
-function search() {
+function book_import(event) {
+    event.preventDefault();
     var csrftoken = getCookie('csrftoken');
+    var search_input = $("#id_search_input").val();
     $.post({
-        url: "/search_api/",
+        url: "/book_import/",
         data: {
             csrfmiddlewaretoken: csrftoken,
-            id_product: this.dataset.id,
+            search_input: search_input,
         }
-    }).done(function (repsonse) {
-        var $result_list = $("#search_list");
-        console.log($result_list);
-        $result_list.html(repsonse)
+    }).done(function () {
+        console.log("poszlo");
+        $("#search_list").text("Books have already imported")
 
     })
         .fail(function (e) {
@@ -32,14 +33,10 @@ function search() {
             console.log(e)
 
         });
-
-
 }
 
-$(document).ready(function (event) {
-    event.preventDefault();
-    $("#search_api").click(search);
-
+$(document).ready(function () {
+    $("#search_import").click(book_import);
 });
 
 function filter(event) {
@@ -87,19 +84,17 @@ $(document).ready(function () {
     $("#filter").click(filter);
 });
 
-function book_import(event) {
-    event.preventDefault();
+function search(event) {
+        event.preventDefault();
     var csrftoken = getCookie('csrftoken');
-    var search_input = $("#id_search_input").val();
     $.post({
-        url: "/book_import/",
+        url: "/search_api/",
         data: {
             csrfmiddlewaretoken: csrftoken,
-            search_input: search_input,
         }
-    }).done(function () {
-        console.log("poszlo");
-        $("#search_list").text("Books have already imported")
+    }).done(function (repsonse) {
+        var $result_list = $("#search_list");
+        $result_list.html(repsonse)
 
     })
         .fail(function (e) {
@@ -107,8 +102,12 @@ function book_import(event) {
             console.log(e)
 
         });
+
+
 }
 
-$(document).ready(function (event) {
-    $("#search_import").click(book_import);
+$(document).ready(function () {
+    $("#search_api").click(search);
+
 });
+
