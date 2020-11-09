@@ -79,15 +79,19 @@ b)With checking filter type
 
 a) before editing
 
-<img width="353" alt="Zrzut ekranu 2020-11-9 o 11 15 31" src="https://user-images.githubusercontent.com/56914063/98528705-f795a280-227c-11eb-95b5-159cd044cb65.png">
+<img width="447" alt="Zrzut ekranu 2020-11-9 o 12 40 12" src="https://user-images.githubusercontent.com/56914063/98536911-d3d85980-2288-11eb-89f9-f60e9f5e65cc.png">
 
 b) Page amount has changed
 
-<img width="514" alt="Zrzut ekranu 2020-11-9 o 11 17 20" src="https://user-images.githubusercontent.com/56914063/98528872-30ce1280-227d-11eb-922c-a693219348a7.png">
+<img width="532" alt="Zrzut ekranu 2020-11-9 o 12 40 23" src="https://user-images.githubusercontent.com/56914063/98536915-d5a21d00-2288-11eb-8324-aa767fc3230d.png">
+
 
 c) View in database
 
-<img width="1280" alt="Zrzut ekranu 2020-11-9 o 11 20 34" src="https://user-images.githubusercontent.com/56914063/98529233-a9cd6a00-227d-11eb-8b33-59d9f3e4e679.png">
+<img width="1280" alt="Zrzut ekranu 2020-11-9 o 12 43 18" src="https://user-images.githubusercontent.com/56914063/98537202-329dd300-2289-11eb-958d-6ca898f2f03a.png">
+
+
+d) add book
 
 
 
