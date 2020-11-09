@@ -29,42 +29,67 @@ Ongoing
 
 # Usage illustrations:
 
-### 1. Books model records
+## 1. Books model records
 a) empty title
 
-![empty_title](https://user-images.githubusercontent.com/56914063/98466749-c57b3680-21d1-11eb-98fd-af661331fae2.png)
+<img width="1279" alt="Zrzut ekranu 2020-11-8 o 21 08 32" src="https://user-images.githubusercontent.com/56914063/98483188-94692900-2206-11eb-9881-bc49c3f8c633.png">
+
 
 b)filtering only by author
 
-![filtering_author](https://user-images.githubusercontent.com/56914063/98466753-c7dd9080-21d1-11eb-9e08-8cd359da4909.png)
+<img width="1280" alt="Zrzut ekranu 2020-11-8 o 21 09 27" src="https://user-images.githubusercontent.com/56914063/98483205-bcf12300-2206-11eb-8b31-5a0eabfa0d57.png">
 
 c)filtering by publishing language
 
-![pub_lang](https://user-images.githubusercontent.com/56914063/98466754-c8762700-21d1-11eb-9cc2-74c61303f739.png)
+<img width="1280" alt="Zrzut ekranu 2020-11-8 o 21 11 32" src="https://user-images.githubusercontent.com/56914063/98483258-0b062680-2207-11eb-89ca-cd10bd05b348.png">
 
 d)filtering by publishing dates and title
 
-![search_dates](https://user-images.githubusercontent.com/56914063/98466755-c90ebd80-21d1-11eb-8a7c-97f617595d8f.png)
+<img width="660" alt="Zrzut ekranu 2020-11-8 o 21 12 51" src="https://user-images.githubusercontent.com/56914063/98483290-44d72d00-2207-11eb-956c-022b53bc672b.png">
 
 e)filtering by only dates
 
-![filter_by_date](https://user-images.githubusercontent.com/56914063/98466994-42f37680-21d3-11eb-8c6f-4202db72f61a.png)
+<img width="1280" alt="Zrzut ekranu 2020-11-8 o 21 15 00" src="https://user-images.githubusercontent.com/56914063/98483323-8962c880-2207-11eb-80a0-19be83607087.png">
+
+f)Filtering by nothing
+
+<img width="1280" alt="Zrzut ekranu 2020-11-8 o 21 27 00" src="https://user-images.githubusercontent.com/56914063/98483494-2d993f00-2209-11eb-8079-3af64e404aa8.png">
+
+## 2.Searching using Google Api books
+
+<img width="1275" alt="Zrzut ekranu 2020-11-8 o 21 43 13" src="https://user-images.githubusercontent.com/56914063/98483813-7f42c900-220b-11eb-998d-3c01a2c00996.png">
+
+## 3.Filtering using Google Api books
+
+a) Without checking filter type
+
+<img width="1280" alt="Zrzut ekranu 2020-11-8 o 21 54 54" src="https://user-images.githubusercontent.com/56914063/98484063-3855d300-220d-11eb-91f6-be6af358ce2c.png">
+
+b)With checking filter type
+
+<img width="1280" alt="Zrzut ekranu 2020-11-8 o 21 55 58" src="https://user-images.githubusercontent.com/56914063/98484065-3b50c380-220d-11eb-8f49-da61514d386b.png">
+
+## 4.Import Google Api
+
+<img width="496" alt="Zrzut ekranu 2020-11-9 o 11 10 35" src="https://user-images.githubusercontent.com/56914063/98528413-8b1aa380-227c-11eb-80a5-53693e6a073d.png">
+
+<img width="1280" alt="Zrzut ekranu 2020-11-9 o 11 11 25" src="https://user-images.githubusercontent.com/56914063/98528419-8eae2a80-227c-11eb-9038-c059ddf2ca91.png">
+
+## 5. Edit and add book
+
+a) before editing
+
+<img width="353" alt="Zrzut ekranu 2020-11-9 o 11 15 31" src="https://user-images.githubusercontent.com/56914063/98528705-f795a280-227c-11eb-95b5-159cd044cb65.png">
+
+b) Page amount has changed
+
+<img width="514" alt="Zrzut ekranu 2020-11-9 o 11 17 20" src="https://user-images.githubusercontent.com/56914063/98528872-30ce1280-227d-11eb-922c-a693219348a7.png">
+
+c) View in database
+
+<img width="1280" alt="Zrzut ekranu 2020-11-9 o 11 20 34" src="https://user-images.githubusercontent.com/56914063/98529233-a9cd6a00-227d-11eb-8b33-59d9f3e4e679.png">
 
 
-## 2.Heroku
-
-### Import Api
-
-![Zrzut ekranu 2020-11-7 o 13 16 43](https://user-images.githubusercontent.com/56914063/98441259-795ec200-20fd-11eb-9e29-a4529d7032c9.png)
-
-
-### Filtering by Google Api book
-# a)Only search
-
-<img width="1280" alt="Zrzut ekranu 2020-11-5 o 23 06 14" src="https://user-images.githubusercontent.com/56914063/98302040-10bbfc00-1fbc-11eb-947f-af8cf34555b5.png">
-
-# b)search and checked filter
-<img width="1280" alt="Zrzut ekranu 2020-11-5 o 23 06 00" src="https://user-images.githubusercontent.com/56914063/98302159-36490580-1fbc-11eb-8065-d1419d583c99.png">
 
 
 
