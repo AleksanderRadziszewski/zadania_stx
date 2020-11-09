@@ -1,6 +1,6 @@
 # Project Name: Zadania_stx
 
-This project aims to provide some basic search, filter and import functionality like:
+### This project aims to provide some basic search, filter and import functionality like:
 
 - filtering and searching by particular fields of Book model
 - searching and filtering by keyword in Google Api book
@@ -25,7 +25,7 @@ Book:
 
 # Project status:
 
-Ongoing
+Finished
 
 # Usage illustrations:
 
@@ -93,13 +93,15 @@ c) View in database
 
 d) add book
 
+<img width="686" alt="Zrzut ekranu 2020-11-9 o 18 33 34" src="https://user-images.githubusercontent.com/56914063/98576653-26326e00-22bb-11eb-8d51-27dadb148716.png">
 
+<img width="538" alt="Zrzut ekranu 2020-11-9 o 18 38 47" src="https://user-images.githubusercontent.com/56914063/98576659-2894c800-22bb-11eb-9506-34bb916b6654.png">
 
+<img width="1275" alt="Zrzut ekranu 2020-11-9 o 18 40 21" src="https://user-images.githubusercontent.com/56914063/98576661-29c5f500-22bb-11eb-90e4-84b6f9a1d39b.png">
 
+## 6. Unit tests
 
-
-
-
+![Zrzut ekranu 2020-11-9 o 18 58 15](https://user-images.githubusercontent.com/56914063/98578679-f2a51300-22bd-11eb-98f0-790f80cb2c5f.png)
 
 
 # Sources:
