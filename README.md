@@ -69,6 +69,26 @@ b)With checking filter type
 
 <img width="1280" alt="Zrzut ekranu 2020-11-8 o 21 55 58" src="https://user-images.githubusercontent.com/56914063/98484065-3b50c380-220d-11eb-8f49-da61514d386b.png">
 
+## 4.Import Google Api
+
+<img width="496" alt="Zrzut ekranu 2020-11-9 o 11 10 35" src="https://user-images.githubusercontent.com/56914063/98528413-8b1aa380-227c-11eb-80a5-53693e6a073d.png">
+
+<img width="1280" alt="Zrzut ekranu 2020-11-9 o 11 11 25" src="https://user-images.githubusercontent.com/56914063/98528419-8eae2a80-227c-11eb-9038-c059ddf2ca91.png">
+
+## 5. Edit and add book
+
+a) before editing
+
+<img width="353" alt="Zrzut ekranu 2020-11-9 o 11 15 31" src="https://user-images.githubusercontent.com/56914063/98528705-f795a280-227c-11eb-95b5-159cd044cb65.png">
+
+b) Page amount has changed
+
+<img width="514" alt="Zrzut ekranu 2020-11-9 o 11 17 20" src="https://user-images.githubusercontent.com/56914063/98528872-30ce1280-227d-11eb-922c-a693219348a7.png">
+
+c) View in database
+
+<img width="1280" alt="Zrzut ekranu 2020-11-9 o 11 20 34" src="https://user-images.githubusercontent.com/56914063/98529233-a9cd6a00-227d-11eb-8b33-59d9f3e4e679.png">
+
 
 
 
