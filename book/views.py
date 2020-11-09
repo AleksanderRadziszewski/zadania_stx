@@ -2,7 +2,7 @@ from datetime import date
 
 import requests
 from django.core.exceptions import ValidationError
-from django.db.models import Max, Min, Q
+from django.db.models import Min, Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
@@ -22,15 +22,10 @@ class WelcomeView(View):
 class SearchBookListView(View):
     def get(self, request):
         form = SearchForm(initial={"pub_date_to": date.today().year})
-        books = Book.objects.all()
-        new_book = books.aggregate(Max("pk")).get("pk__max") + 1
-
-        return render(request, "book/form.html", {"form": form, "new_book": new_book})
+        return render(request, "book/form.html", {"form": form})
 
     def post(self, request):
         form = SearchForm(request.POST)
-        books = Book.objects.all()
-        new_book = books.aggregate(Max("pk")).get("pk__max") + 1
 
         if form.is_valid():
             search_input = form.cleaned_data.get("search_input")
@@ -54,24 +49,18 @@ class SearchBookListView(View):
                     pub_date_since = part_books.aggregate(Min("pub_date")).get("pub_date__min")
                     part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
 
-                return render(
-                    request, "book/books_table.html", {"form": form, "part_books": part_books, "new_book": new_book}
-                )
+                return render(request, "book/books_table.html", {"form": form, "part_books": part_books})
 
             elif not pub_date_to and not pub_date_since and not search_input:
                 part_books = Book.objects.all()
 
-                return render(
-                    request, "book/books_table.html", {"form": form, "new_book": new_book, "part_books": part_books}
-                )
+                return render(request, "book/books_table.html", {"form": form, "part_books": part_books})
             part_books = Book.objects.all()
             part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
 
-            return render(
-                request, "book/books_table.html", {"form": form, "new_book": new_book, "part_books": part_books}
-            )
+            return render(request, "book/books_table.html", {"form": form, "part_books": part_books})
 
-        return render(request, "book/books_table.html", {"form": form, "new_book": new_book})
+        return render(request, "book/books_table.html", {"form": form})
 
 
 # Exercise 1b
@@ -101,20 +90,22 @@ class AddUpdateBookView(View):
 
     def post(self, request, pk):
         form = AddUpdateBookForm(request.POST)
-        if form.is_valid():
-            book = Book.objects.get(pk=pk)
-            book.title = form.cleaned_data.get("title")
-            book.author = form.cleaned_data.get("author")
-            book.pub_date = form.cleaned_data.get("pub_date")
-            book.pages_amount = form.cleaned_data.get("pages_amount")
-            book.pub_language = form.cleaned_data.get("pub_language")
-            book.link = form.cleaned_data.get("link")
-            book.isbn_num = form.cleaned_data.get("isbn_num")
-            book.save()
-        else:
-            raise ValidationError("Invalid form")
         text = "The book has already saved"
+        try:
+            if form.is_valid():
+                book = Book.objects.get(pk=pk)
+                book.title = form.cleaned_data.get("title")
+                book.author = form.cleaned_data.get("author")
+                book.pub_date = form.cleaned_data.get("pub_date")
+                book.pages_amount = form.cleaned_data.get("pages_amount")
+                book.pub_language = form.cleaned_data.get("pub_language")
+                book.link = form.cleaned_data.get("link")
+                book.isbn_num = form.cleaned_data.get("isbn_num")
+                book.save()
+        except KeyError:
+            pass
 
+            raise ValidationError("Invalid form")
         return render(request, "book/edit_book.html", {"form": form, "text": text})
 
 
@@ -200,6 +191,7 @@ class SearchApiView(View):
 
 # Exercise 3b
 
+
 class FilterView(View):
     def get(self, request):
         form = SearchApiForm()
@@ -215,37 +207,13 @@ class FilterView(View):
                 f"https://www.googleapis.com/books/v1/volumes?q={search_input}&"
                 f"filter={cat_value}&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y"
             ).json()
-            items_amount = len(book_search["items"])
 
-            for item in range(items_amount):
-                try:
-                    title = book_search["items"][item]["volumeInfo"].get("title") or "no title"
-                    pub_date = book_search["items"][item]["volumeInfo"].get("publishedDate") or "no date"
-                    page_amount = book_search["items"][item]["volumeInfo"].get("pageCount") or "no page count"
-                    isbn_num = book_search["items"][item]["volumeInfo"]["industryIdentifiers"][0].get("identifier")
-                    pub_language = book_search["items"][item]["volumeInfo"].get("language") or "no publishing language"
-                    link = book_search["items"][item].get("selfLink") or "no link"
-                    authors = book_search["items"][item]["volumeInfo"].get("authors") or "no authors"
-                    books_list_search.append(
-                        {
-                            "title": title,
-                            "authors": ",".join(authors),
-                            "pub_date": pub_date,
-                            "isbn_num": isbn_num,
-                            "page_amount": page_amount,
-                            "pub_language": pub_language,
-                            "link": link,
-                        }
-                    )
-                except KeyError:
-                    pass
+        else:
+            book_search = requests.get(
+                f"https://www.googleapis.com/books/v1/volumes?q="
+                f"{search_input}&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y"
+            ).json()
 
-            return render(request, "book/filter_book_api.html", {"books_list_search": books_list_search})
-
-        book_search = requests.get(
-            f"https://www.googleapis.com/books/v1/volumes?q="
-            f"{search_input}&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y"
-        ).json()
         items_amount = len(book_search["items"])
 
         for item in range(items_amount):
