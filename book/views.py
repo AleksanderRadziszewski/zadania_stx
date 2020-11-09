@@ -107,7 +107,9 @@ class AddUpdateBookView(View):
             book.save()
         else:
             raise ValidationError("Invalid form")
-        return redirect(reverse("update", kwargs={"pk": pk}))
+        text="The book has already changed"
+        return render(request,"book/edit_book.html",{"form":form,
+                                                     "text":text})
 
 
 # Exercise 2
@@ -206,6 +208,30 @@ class FilterView(View):
                 f"filter={cat_value}&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y"
             ).json()
             items_amount = len(book_search["items"])
+            for item in range(items_amount):
+                try:
+                    title = book_search["items"][item]["volumeInfo"].get("title") or "no title"
+                    pub_date = book_search["items"][item]["volumeInfo"].get("publishedDate") or "no date"
+                    page_amount = book_search["items"][item]["volumeInfo"].get("pageCount") or "no page count"
+                    isbn_num = book_search["items"][item]["volumeInfo"]["industryIdentifiers"][0].get("identifier")
+                    pub_language = book_search["items"][item]["volumeInfo"].get("language") or "no publishing language"
+                    link = book_search["items"][item].get("selfLink") or "no link"
+                    authors = book_search["items"][item]["volumeInfo"].get("authors") or "no authors"
+                    books_list_search.append(
+                        {
+                            "title": title,
+                            "authors": ",".join(authors),
+                            "pub_date": pub_date,
+                            "isbn_num": isbn_num,
+                            "page_amount": page_amount,
+                            "pub_language": pub_language,
+                            "link": link,
+                        }
+                    )
+                except KeyError:
+                    pass
+
+            return render(request, "book/filter_book_api.html", {"books_list_search": books_list_search})
 
         book_search = requests.get(
             f"https://www.googleapis.com/books/v1/volumes?q="
