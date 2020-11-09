@@ -1,10 +1,9 @@
 from datetime import date
 import requests
 from django.core.exceptions import ValidationError
-from django.db.models import Q, Min, Max
+from django.db.models import Max, Min, Q
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
-from django.urls import reverse
+from django.shortcuts import render
 from django.views import View
 from book.forms import AddUpdateBookForm, SearchApiForm, SearchForm
 from book.models import Book
@@ -14,26 +13,27 @@ class WelcomeView(View):
     def get(self, request):
         return render(request, "book/welcome.html")
 
-
 # Exercise 1a
 
-
 class SearchBookListView(View):
+
     def get(self, request):
         form = SearchForm(initial={"pub_date_to": date.today().year})
         books = Book.objects.all()
-        new_book = books.aggregate(Max('pk')).get("pk__max")+1
-        return render(request, "book/form.html", {"form": form,
-                                                  "new_book":new_book})
+        new_book = books.aggregate(Max("pk")).get("pk__max") + 1
+
+        return render(request, "book/form.html", {"form": form, "new_book": new_book})
 
     def post(self, request):
         form = SearchForm(request.POST)
         books = Book.objects.all()
-        new_book = books.aggregate(Max('pk')).get("pk__max") + 1
+        new_book = books.aggregate(Max("pk")).get("pk__max") + 1
+
         if form.is_valid():
             search_input = form.cleaned_data.get("search_input")
             pub_date_since = form.cleaned_data.get("pub_date_since")
             pub_date_to = form.cleaned_data.get("pub_date_to")
+
             if search_input:
                 part_books = Book.objects.all().filter(
                     Q(title__icontains=search_input)
@@ -42,30 +42,33 @@ class SearchBookListView(View):
                 )
                 if pub_date_since and pub_date_to:
                     part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
+
                 elif not pub_date_to:
                     pub_date_to = date.today().year
                     part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
+
                 elif not pub_date_since:
-                    pub_date_since = part_books.aggregate(Min('pub_date')).get("pub_date__min")
+                    pub_date_since = part_books.aggregate(Min("pub_date")).get("pub_date__min")
                     part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
 
-                return render(request, "book/books_table.html", {"form": form,
-                                                                 "part_books": part_books,
-                                                                 "new_book":new_book})
+                return render(
+                    request, "book/books_table.html", {"form": form, "part_books": part_books, "new_book": new_book}
+                )
 
             elif not pub_date_to and not pub_date_since and not search_input:
                 part_books = Book.objects.all()
-                return render(request, "book/books_table.html", {"form": form,
-                                                                 "new_book": new_book,
-                                                                 "part_books": part_books})
 
+                return render(
+                    request, "book/books_table.html", {"form": form, "new_book": new_book, "part_books": part_books}
+                )
             part_books = Book.objects.all()
             part_books = part_books.filter(pub_date__range=[pub_date_since, pub_date_to])
-            return render(request, "book/books_table.html", {"form": form,
-                                                             "new_book":new_book,
-                                                             "part_books": part_books})
 
-        return render(request, "book/books_table.html", {"form": form})
+            return render(
+                request, "book/books_table.html", {"form": form, "new_book": new_book, "part_books": part_books}
+            )
+
+        return render(request, "book/books_table.html", {"form": form, "new_book": new_book})
 
 
 # Exercise 1b
@@ -83,9 +86,9 @@ class AddUpdateBookView(View):
                 "pub_language": "English",
                 "isbn_num": "222-444-444",
                 "link": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.barnesandnoble.com%"
-                        "2Fw%2Fharry-potter-i-komnata-tajemnic-j-k-rowling%2F1116540470&psig="
-                        "AOvVaw3la-vaVjRPIpCZgD7o0T3q&ust=1604313551353000&source=images&cd=vfe&ved="
-                        "0CAIQjRxqFwoTCJDh6OyT4ewCFQAAAAAdAAAAABAG",
+                "2Fw%2Fharry-potter-i-komnata-tajemnic-j-k-rowling%2F1116540470&psig="
+                "AOvVaw3la-vaVjRPIpCZgD7o0T3q&ust=1604313551353000&source=images&cd=vfe&ved="
+                "0CAIQjRxqFwoTCJDh6OyT4ewCFQAAAAAdAAAAABAG",
             },
         )
 
@@ -107,9 +110,9 @@ class AddUpdateBookView(View):
             book.save()
         else:
             raise ValidationError("Invalid form")
-        text="The book has already changed"
-        return render(request,"book/edit_book.html",{"form":form,
-                                                     "text":text})
+        text = "The book has already changed"
+
+        return render(request, "book/edit_book.html", {"form": form, "text": text})
 
 
 # Exercise 2
@@ -175,7 +178,6 @@ class SearchApiView(View):
                 authors = books["items"][item]["volumeInfo"]["authors"]
                 isbn_num = books["items"][item]["volumeInfo"]["industryIdentifiers"][0].get("identifier")
                 books_list.append(
-
                     {
                         "title": title,
                         "authors": ",".join(authors),
@@ -184,7 +186,8 @@ class SearchApiView(View):
                         "isbn_num": isbn_num,
                         "pub_lnguage": pub_language,
                         "link": link,
-                    })
+                    }
+                )
             except KeyError:
                 pass
         return render(request, "book/book_list.html", {"book_list": books_list})
