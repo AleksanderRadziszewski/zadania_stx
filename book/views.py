@@ -113,7 +113,7 @@ class AddUpdateBookView(View):
             book.save()
         else:
             raise ValidationError("Invalid form")
-        text = "The book has already changed"
+        text = "The book has already saved"
 
         return render(request, "book/edit_book.html", {"form": form, "text": text})
 
@@ -195,7 +195,7 @@ class SearchApiView(View):
             except KeyError:
                 pass
 
-        return render(request, "book/book_list.html", {"book_list": books_list})
+        return render(request, "book/book_list_api.html", {"book_list": books_list})
 
 
 # Exercise 3b

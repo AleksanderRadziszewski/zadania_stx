@@ -33,7 +33,7 @@ $(document).ready(function () {
     $("#search_import").click(book_import);
 });
 
-function filter(event) {
+function filter_api(event) {
     event.preventDefault();
     var csrftoken = getCookie('csrftoken');
     var search_input = $("#id_search_input").val();
@@ -67,7 +67,7 @@ function filter(event) {
 }
 
 $(document).ready(function () {
-    $("#filter").click(filter);
+    $("#filter").click(filter_api);
 });
 
 function search_api(event) {

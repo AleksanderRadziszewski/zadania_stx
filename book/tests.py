@@ -85,7 +85,7 @@ class TestSearchApi(TestCase):
     def test_search_api_POST_true(self):
         response = self.client.post(self.search_api)
         self.assertEqual(response.status_code, 200)
-        self.assertTemplateUsed(response, "book/book_list.html")
+        self.assertTemplateUsed(response, "book/book_list_api.html")
 
     def test_search_api_POST_false(self):
         response = self.client.post(self.search_api)
@@ -105,7 +105,7 @@ class TestFilterApi(TestCase):
 
     def test_filter_api_GET_false(self):
         response = self.client.get(self.filter_api)
-        self.assertTemplateNotUsed(response, "book/book_list.html")
+        self.assertTemplateNotUsed(response, "book/book_list_api.html")
 
     def test_filter_api_POST_true(self):
         response = self.client.post(self.filter_api)
@@ -115,7 +115,7 @@ class TestFilterApi(TestCase):
     def test_filter_api_POST_false(self):
         response = self.client.post(self.filter_api)
         self.assertNotEqual(response.status_code, 500)
-        self.assertTemplateNotUsed(response, "book/book_list.html")
+        self.assertTemplateNotUsed(response, "book/book_list_api.html")
 
 
 class TestBookImport(TestCase):
@@ -131,7 +131,7 @@ class TestBookImport(TestCase):
     def test_book_import_GET_false(self):
         response = self.client.get(self.book_import)
         self.assertNotEqual(response.status_code, 500)
-        self.assertTemplateNotUsed(response, "book/book_list.html")
+        self.assertTemplateNotUsed(response, "book/book_list_api.html")
 
     def test__book_import_POST_true(self):
         response = self.client.post(self.book_import)
@@ -140,4 +140,4 @@ class TestBookImport(TestCase):
     def test_book_import_POST_false(self):
         response = self.client.post(self.book_import)
         self.assertNotEqual(response.status_code, 500)
-        self.assertTemplateNotUsed(response, "book/book_list.html")
+        self.assertTemplateNotUsed(response, "book/book_list_api.html")
