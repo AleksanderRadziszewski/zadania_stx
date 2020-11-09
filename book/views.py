@@ -1,10 +1,12 @@
 from datetime import date
+
 import requests
 from django.core.exceptions import ValidationError
 from django.db.models import Max, Min, Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
+
 from book.forms import AddUpdateBookForm, SearchApiForm, SearchForm
 from book.models import Book
 
@@ -13,10 +15,11 @@ class WelcomeView(View):
     def get(self, request):
         return render(request, "book/welcome.html")
 
+
 # Exercise 1a
 
-class SearchBookListView(View):
 
+class SearchBookListView(View):
     def get(self, request):
         form = SearchForm(initial={"pub_date_to": date.today().year})
         books = Book.objects.all()
@@ -168,6 +171,7 @@ class SearchApiView(View):
         ).json()
         items_amount = len(books["items"])
         books_list = []
+
         for item in range(items_amount):
             try:
                 title = books["items"][item]["volumeInfo"]["title"]
@@ -190,11 +194,11 @@ class SearchApiView(View):
                 )
             except KeyError:
                 pass
+
         return render(request, "book/book_list.html", {"book_list": books_list})
 
 
 # Exercise 3b
-
 
 class FilterView(View):
     def get(self, request):
@@ -205,12 +209,14 @@ class FilterView(View):
         search_input = request.POST.get("search_input")
         cat_value = request.POST.get("value")
         books_list_search = []
+
         if cat_value:
             book_search = requests.get(
                 f"https://www.googleapis.com/books/v1/volumes?q={search_input}&"
                 f"filter={cat_value}&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y"
             ).json()
             items_amount = len(book_search["items"])
+
             for item in range(items_amount):
                 try:
                     title = book_search["items"][item]["volumeInfo"].get("title") or "no title"
