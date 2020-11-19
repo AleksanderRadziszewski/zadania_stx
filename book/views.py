@@ -1,19 +1,37 @@
 from datetime import date
-
 import requests
 from django.core.exceptions import ValidationError
 from django.db.models import Min, Q
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from rest_framework.parsers import JSONParser
 
 from book.forms import AddUpdateBookForm, SearchApiForm, SearchForm
 from book.models import Book
+from book.serializers import BookSerializer
 
 
 class WelcomeView(View):
     def get(self, request):
         return render(request, "book/welcome.html")
+
+
+@csrf_exempt
+def book_list(request):
+
+    if request.method == "GET":
+        books=Book.objects.all()
+        serializer=BookSerializer(books, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    elif request.method == "POST":
+        data=JSONParser().parse(request)
+        serializer=BookSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
 
 
 # Exercise 1a
@@ -63,37 +81,26 @@ class SearchBookListView(View):
         return render(request, "book/books_table.html", {"form": form})
 
 
-# Exercise 1b
 
 
 class AddUpdateBookView(View):
-    def get(self, request, pk):
-        book, created = Book.objects.get_or_create(
-            pk=pk,
-            defaults={
-                "title": "bla",
-                "author": "bb",
-                "pub_date": 1940,
-                "pages_amount": 80,
-                "pub_language": "English",
-                "isbn_num": "222-444-444",
-                "link": "https://www.google.com/url?sa=i&url=https%3A%2F%2Fwww.barnesandnoble.com%"
-                "2Fw%2Fharry-potter-i-komnata-tajemnic-j-k-rowling%2F1116540470&psig="
-                "AOvVaw3la-vaVjRPIpCZgD7o0T3q&ust=1604313551353000&source=images&cd=vfe&ved="
-                "0CAIQjRxqFwoTCJDh6OyT4ewCFQAAAAAdAAAAABAG",
-            },
-        )
-
-        form = AddUpdateBookForm(instance=book)
-
+    def get(self, request, pk=""):
+        if not pk:
+            form = AddUpdateBookForm()
+        else:
+            book = Book.objects.get(pk=pk)
+            form = AddUpdateBookForm(instance=book)
         return render(request, "book/edit_book.html", {"form": form})
 
-    def post(self, request, pk):
+    def post(self, request,pk=""):
         form = AddUpdateBookForm(request.POST)
         text = "The book has already saved"
         try:
             if form.is_valid():
-                book = Book.objects.get(pk=pk)
+                if not pk:
+                    book = Book.objects.get(pk=pk)
+                else:
+                    book = Book()
                 book.title = form.cleaned_data.get("title")
                 book.author = form.cleaned_data.get("author")
                 book.pub_date = form.cleaned_data.get("pub_date")
