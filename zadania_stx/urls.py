@@ -20,7 +20,7 @@ from book import views
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("list/", include("book.urls")),
+    path("books_rest/", include("book.urls")),
     path("", views.WelcomeView.as_view(), name="welcome"),
     path("search/", views.SearchBookListView.as_view(), name="search"),
     path("update/<int:pk>/", views.AddUpdateBookView.as_view(), name="update"),
