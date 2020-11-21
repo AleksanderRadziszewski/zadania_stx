@@ -2,14 +2,12 @@ from datetime import date
 import requests
 from django.core.exceptions import ValidationError
 from django.db.models import Min, Q
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
-from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.views import APIView
 
 from book.forms import AddUpdateBookForm, SearchApiForm, SearchForm
 from book.models import Book
@@ -21,42 +19,47 @@ class WelcomeView(View):
         return render(request, "book/welcome.html")
 
 
-@api_view(["GET", "POST"])
-def books_list(request):
+class BookAPIView(APIView):
 
-    if request.method == "GET":
-        books=Book.objects.all()
-        serializer=BookSerializer(books, many=True)
+    def get(self, request):
+        books = Book.objects.all()
+        serializer = BookSerializer(books, many=True)
         return Response(serializer.data)
 
-    elif request.method == "POST":
-        serializer=BookSerializer(data=request.data)
+    def post(self, request):
+        serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED )
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(["GET", "PUT", "DELETE"])
-def book_detail(request, pk):
-    try:
-        book=Book.objects.get(pk=pk)
 
-    except Book.DoesNotExist:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+class BookDetailsApiView(APIView):
 
-    if request.method == "GET":
-        serializer = BookSerializer(book)
+    def get_object(self, id ):
+
+        try:
+            return Book.objects.get(id=id)
+
+        except Book.DoesNotExist:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def get(self, request, id):
+        book=self.get_object(id)
+        serializer=BookSerializer(book)
         return Response(serializer.data)
 
-    elif request.method == "PUT":
-        serializer=BookSerializer(data=request.data)
+    def put(self, request, id):
+        book=self.get_object(id)
+        serializer=BookSerializer(book, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-    elif request.method == "DELETE":
+    def delete(self, request, id):
+        book=self.get_object(id)
         book.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
