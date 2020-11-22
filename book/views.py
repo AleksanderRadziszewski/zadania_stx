@@ -8,6 +8,7 @@ from django.views import View
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.views import APIView
+from rest_framework import generics, mixins
 
 from book.forms import AddUpdateBookForm, SearchApiForm, SearchForm
 from book.models import Book
@@ -17,6 +18,36 @@ from book.serializers import BookSerializer
 class WelcomeView(View):
     def get(self, request):
         return render(request, "book/welcome.html")
+
+
+class GenericAPIView(generics.GenericAPIView, mixins.ListModelMixin,
+                     mixins.CreateModelMixin):
+    serializer_class = BookSerializer
+    queryset = Book.objects.all()
+
+    def get(self, request):
+        return self.list(request)
+
+    def post(self, request):
+        return self.create(request)
+
+
+class GenericDetailAPIView(generics.GenericAPIView, mixins.ListModelMixin,
+                           mixins.UpdateModelMixin, mixins.RetrieveModelMixin,
+                           mixins.DestroyModelMixin):
+
+    serializer_class = BookSerializer
+    queryset = Book.objects.all()
+    lookup_field = "id"
+
+    def get(self, request, id):
+            return self.retrieve(request)
+
+    def put(self, request, id):
+        return self.update(request, id)
+
+    def delete(self, request, id):
+        return self.destroy(request, id)
 
 
 class BookAPIView(APIView):
@@ -37,8 +68,7 @@ class BookAPIView(APIView):
 
 class BookDetailsApiView(APIView):
 
-    def get_object(self, id ):
-
+    def get_object(self, id):
         try:
             return Book.objects.get(id=id)
 
@@ -46,23 +76,22 @@ class BookDetailsApiView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
     def get(self, request, id):
-        book=self.get_object(id)
-        serializer=BookSerializer(book)
+        book = self.get_object(id)
+        serializer = BookSerializer(book)
         return Response(serializer.data)
 
     def put(self, request, id):
-        book=self.get_object(id)
-        serializer=BookSerializer(book, data=request.data)
+        book = self.get_object(id)
+        serializer = BookSerializer(book, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, id):
-        book=self.get_object(id)
+        book = self.get_object(id)
         book.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
-
 
 
 # Exercise 1a
@@ -112,8 +141,6 @@ class SearchBookListView(View):
         return render(request, "book/books_table.html", {"form": form})
 
 
-
-
 class AddUpdateBookView(View):
     def get(self, request, pk=""):
         if not pk:
@@ -123,7 +150,7 @@ class AddUpdateBookView(View):
             form = AddUpdateBookForm(instance=book)
         return render(request, "book/edit_book.html", {"form": form})
 
-    def post(self, request,pk=""):
+    def post(self, request, pk=""):
         form = AddUpdateBookForm(request.POST)
         text = "The book has already saved"
         try:
