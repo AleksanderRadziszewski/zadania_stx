@@ -1,14 +1,12 @@
 from datetime import date
 import requests
+from django.http import Http404
 from django.core.exceptions import ValidationError
 from django.db.models import Min, Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
-from rest_framework.response import Response
-from rest_framework import status
-from rest_framework.views import APIView
-from rest_framework import generics, mixins
+from rest_framework import generics
 
 from book.forms import AddUpdateBookForm, SearchApiForm, SearchForm
 from book.models import Book
@@ -20,38 +18,7 @@ class WelcomeView(View):
         return render(request, "book/welcome.html")
 
 
-class GenericAPIView(generics.GenericAPIView, mixins.ListModelMixin,
-                     mixins.CreateModelMixin):
-    serializer_class = BookSerializer
-    queryset = Book.objects.all()
-
-    def get(self, request):
-        return self.list(request)
-
-    def post(self, request):
-        return self.create(request)
-
-
-class GenericDetailAPIView(generics.GenericAPIView, mixins.ListModelMixin,
-                           mixins.UpdateModelMixin, mixins.RetrieveModelMixin,
-                           mixins.DestroyModelMixin):
-
-    serializer_class = BookSerializer
-    queryset = Book.objects.all()
-    lookup_field = "id"
-
-    def get(self, request, id):
-            return self.retrieve(request)
-
-    def put(self, request, id):
-        return self.update(request, id)
-
-    def delete(self, request, id):
-        return self.destroy(request, id)
-
-# Exercise 1a
-
-
+# Exercise 1
 class SearchBookListView(View):
     def get(self, request):
         form = SearchForm(initial={"pub_date_to": date.today().year})
@@ -96,6 +63,8 @@ class SearchBookListView(View):
         return render(request, "book/books_table.html", {"form": form})
 
 
+# Exercise 1b
+
 class AddUpdateBookView(View):
     def get(self, request, pk=""):
         if not pk:
@@ -131,7 +100,6 @@ class AddUpdateBookView(View):
 
 # Exercise 2
 
-
 class BooksImportView(View):
     def get(self, request):
         form = SearchApiForm()
@@ -165,98 +133,24 @@ class BooksImportView(View):
         return HttpResponse("")
 
 
-# Exercise 3a
+# Exercise 3
 
+class BookSearchFilterAPIView(generics.ListAPIView):
+    serializer_class = BookSerializer
 
-class SearchApiView(View):
-    def get(self, request):
-        form = SearchApiForm()
-        return render(request, "book/book_search_api.html", {"form": form})
-
-    def post(self, request):
-        SearchApiForm(request.POST)
-        search_input = request.POST.get("search_input")
-        books = requests.get(
-            f"https://www.googleapis.com/books/v1/volumes?q={search_input}"
-            f"&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y"
-        ).json()
-        items_amount = len(books["items"])
-        books_list = []
-
-        for item in range(items_amount):
-            try:
-                title = books["items"][item]["volumeInfo"]["title"]
-                pub_date = books["items"][item]["volumeInfo"]["publishedDate"]
-                page_amount = books["items"][item]["volumeInfo"]["pageCount"]
-                pub_language = books["items"][item]["volumeInfo"]["language"]
-                link = books["items"][item]["selfLink"]
-                authors = books["items"][item]["volumeInfo"]["authors"]
-                isbn_num = books["items"][item]["volumeInfo"]["industryIdentifiers"][0].get("identifier")
-                books_list.append(
-                    {
-                        "title": title,
-                        "authors": ",".join(authors),
-                        "pub_date": pub_date,
-                        "page_amount": page_amount,
-                        "isbn_num": isbn_num,
-                        "pub_lnguage": pub_language,
-                        "link": link,
-                    }
+    def get_queryset(self):
+        book_url = self.kwargs["title"]
+        try:
+            if book_url:
+                queryset = Book.objects.all().filter(
+                    Q(title__icontains=book_url)
+                    | Q(author__icontains=book_url)
+                    | Q(pub_language__icontains=book_url)
                 )
-            except KeyError:
-                pass
+                if not queryset:
+                    raise Http404
+                else:
+                    return queryset
 
-        return render(request, "book/book_list_api.html", {"book_list": books_list})
-
-
-# Exercise 3b
-
-
-class FilterView(View):
-    def get(self, request):
-        form = SearchApiForm()
-        return render(request, "book/filter.html", {"form": form})
-
-    def post(self, request):
-        search_input = request.POST.get("search_input")
-        cat_value = request.POST.get("value")
-        books_list_search = []
-
-        if cat_value:
-            book_search = requests.get(
-                f"https://www.googleapis.com/books/v1/volumes?q={search_input}&"
-                f"filter={cat_value}&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y"
-            ).json()
-
-        else:
-            book_search = requests.get(
-                f"https://www.googleapis.com/books/v1/volumes?q="
-                f"{search_input}&key=AIzaSyC7O8QkIp48tHEEXyE-vjbGMxq1N1ziW8Y"
-            ).json()
-
-        items_amount = len(book_search["items"])
-
-        for item in range(items_amount):
-            try:
-                title = book_search["items"][item]["volumeInfo"].get("title") or "no title"
-                pub_date = book_search["items"][item]["volumeInfo"].get("publishedDate") or "no date"
-                page_amount = book_search["items"][item]["volumeInfo"].get("pageCount") or "no page count"
-                isbn_num = book_search["items"][item]["volumeInfo"]["industryIdentifiers"][0].get("identifier")
-                pub_language = book_search["items"][item]["volumeInfo"].get("language") or "no publishing language"
-                link = book_search["items"][item].get("selfLink") or "no link"
-                authors = book_search["items"][item]["volumeInfo"].get("authors") or "no authors"
-                books_list_search.append(
-                    {
-                        "title": title,
-                        "authors": ",".join(authors),
-                        "pub_date": pub_date,
-                        "isbn_num": isbn_num,
-                        "page_amount": page_amount,
-                        "pub_language": pub_language,
-                        "link": link,
-                    }
-                )
-            except KeyError:
-                pass
-
-        return render(request, "book/filter_book_api.html", {"books_list_search": books_list_search})
+        except Book.DoesNotExist:
+            raise Http404
