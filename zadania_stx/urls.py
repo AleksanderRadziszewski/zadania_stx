@@ -24,7 +24,5 @@ urlpatterns = [
     path("", views.WelcomeView.as_view(), name="welcome"),
     path("search/", views.SearchBookListView.as_view(), name="search"),
     path("update/<int:pk>/", views.AddUpdateBookView.as_view(), name="update"),
-    path("search_api/", views.SearchApiView.as_view(), name="search api"),
-    path("filter/", views.FilterView.as_view(), name="filter api"),
     path("book_import/", views.BooksImportView.as_view(), name="book import"),
 ]
