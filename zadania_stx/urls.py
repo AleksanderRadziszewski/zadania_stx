@@ -15,8 +15,12 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from rest_framework.routers import DefaultRouter
 
 from book import views
+
+router = DefaultRouter()
+router.register("books", views.BookViewSet, basename="book")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -25,4 +29,6 @@ urlpatterns = [
     path("search/", views.SearchBookListView.as_view(), name="search"),
     path("update/<int:pk>/", views.AddUpdateBookView.as_view(), name="update"),
     path("book_import/", views.BooksImportView.as_view(), name="book import"),
+    path("viewset/", include(router.urls)),
+    path("viewset/<int:pk>/", include(router.urls)),
 ]
