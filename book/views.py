@@ -7,8 +7,10 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 from rest_framework import generics
-from rest_framework.authentication import SessionAuthentication, BasicAuthentication
+from rest_framework.authentication import SessionAuthentication, TokenAuthentication, BasicAuthentication
 from rest_framework.permissions import IsAuthenticated
+
+
 
 from book.forms import AddUpdateBookForm, SearchApiForm, SearchForm
 from book.models import Book
@@ -139,7 +141,7 @@ class BooksImportView(View):
 
 class BookSearchFilterAPIView(generics.ListAPIView):
     serializer_class = BookSerializer
-    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
