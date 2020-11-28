@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     "book",
     "rest_framework",
     "rest_framework.authtoken",
+    'django_api_client',
 ]
 
 MIDDLEWARE = [
@@ -129,4 +130,3 @@ STATIC_DIRS = [os.path.join(BASE_DIR, "static")]
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfilies")
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 django_heroku.settings(locals())
-

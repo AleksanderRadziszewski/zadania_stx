@@ -1,8 +1,8 @@
 from django.test import SimpleTestCase
-from django.urls import reverse, resolve, reverse_lazy
+from django.urls import reverse, resolve, path, include
+from django_api_client import status
+from rest_framework.test import CoreAPIClient, APIClient, APITestCase, URLPatternsTestCase
 from book import views
-from book.urls import router
-from book.views import BookViewSet
 
 
 class TestUrls(SimpleTestCase):
@@ -26,5 +26,16 @@ class TestUrls(SimpleTestCase):
     def test_book_search_api_url_is_resolve(self):
         url = reverse("book search api", kwargs={"title": "King of the Alex"})
         self.assertEquals(resolve(url).func.view_class, views.BookSearchFilterAPIView)
+
+class TestBookRestAPI(APITestCase, URLPatternsTestCase):
+    urlpatterns = [
+        path('book', include('book.urls')),
+    ]
+    def test_create_book(self):
+        url=reverse("book-list")
+        response=self.client.get(url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+
 
 
