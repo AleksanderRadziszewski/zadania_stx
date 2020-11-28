@@ -29,7 +29,7 @@ class TestUrls(SimpleTestCase):
 
 class TestBookRestAPI(APITestCase, URLPatternsTestCase):
     urlpatterns = [
-        path('book', include('book.urls')),
+        path('books_rest/', include('book.urls')),
     ]
     def test_create_book(self):
         url=reverse("book-list")
