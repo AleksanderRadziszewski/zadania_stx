@@ -17,11 +17,12 @@ from django.contrib import admin
 from django.urls import path, include
 from book import views
 
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("books_rest/", include("book.urls")),
     path("", views.WelcomeView.as_view(), name="welcome"),
-    path("search/", views.SearchBookListView.as_view(), name="search"),
+    path("search/", views.SearchBookListView.as_view(), name="search book list"),
     path("update/<int:pk>/", views.AddUpdateBookView.as_view(), name="update"),
     path("book_import/", views.BooksImportView.as_view(), name="book import"),
 

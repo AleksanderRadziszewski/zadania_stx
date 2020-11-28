@@ -6,7 +6,7 @@ router = DefaultRouter()
 router.register("books", views.BookViewSet, basename="book")
 
 urlpatterns = [
-    path("books_filter_search/<str:title>/", views.BookSearchFilterAPIView.as_view(), name="book search api view"),
+    path("books_filter_search/<str:title>/", views.BookSearchFilterAPIView.as_view(), name="book search api"),
     path("viewset/", include(router.urls)),
     path("viewset/<int:pk>/", include(router.urls)),
 ]
