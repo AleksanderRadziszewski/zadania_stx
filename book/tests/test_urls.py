@@ -1,7 +1,7 @@
 from django.test import SimpleTestCase
 from django.urls import reverse, resolve, path, include
 from django_api_client import status
-from rest_framework.test import CoreAPIClient, APIClient, APITestCase, URLPatternsTestCase
+from rest_framework.test import APITestCase, URLPatternsTestCase
 from book import views
 
 
@@ -15,7 +15,7 @@ class TestUrls(SimpleTestCase):
         url = reverse("book import")
         self.assertEquals(resolve(url).func.view_class, views.BooksImportView)
 
-    def test_book_update_url_is_resolve(self):
+    def test_book_add_update_url_is_resolve(self):
         url = reverse("update", kwargs={"pk": 522})
         self.assertEquals(resolve(url).func.view_class, views.AddUpdateBookView)
 

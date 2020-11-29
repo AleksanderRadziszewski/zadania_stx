@@ -6,7 +6,7 @@ from django.db.models import Min, Q
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
-from rest_framework import generics, mixins
+from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
