@@ -1,18 +1,18 @@
 from datetime import date
 import requests
 from django.http import Http404
-from django.core.exceptions import ValidationError
 from django.db.models import Min, Q
 from django.http import HttpResponse
 from django.shortcuts import render
+from django.urls import reverse
 from django.views import View
+from django.views.generic import UpdateView, CreateView
 from rest_framework import generics
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import viewsets
 
-
-from book.forms import AddUpdateBookForm, SearchApiForm, SearchForm
+from book.forms import SearchApiForm, SearchForm
 from book.models import Book
 from book.serializers import BookSerializer
 
@@ -23,7 +23,7 @@ class WelcomeView(View):
 
 
 # Exercise 1
-class SearchBookListView(View):
+class BookListSearchView(View):
     def get(self, request):
         form = SearchForm(initial={"pub_date_to": date.today().year})
         return render(request, "book/form.html", {"form": form})
@@ -67,39 +67,20 @@ class SearchBookListView(View):
         return render(request, "book/books_table.html", {"form": form})
 
 
-# Exercise 1b
+class BookUpdateView(UpdateView):
+    model = Book
+    fields = ["title", "author", "pub_date", "pages_amount", "pub_language", "link", "isbn_num"]
+    template_name = "book/edit_book.html"
 
-class AddUpdateBookView(View):
-    def get(self, request, pk=""):
-        if not pk:
-            form = AddUpdateBookForm()
-        else:
-            book = Book.objects.get(pk=pk)
-            form = AddUpdateBookForm(instance=book)
-        return render(request, "book/edit_book.html", {"form": form})
+    def get_success_url(self):
+        return reverse("update", kwargs={"pk": self.object.pk})
 
-    def post(self, request, pk=""):
-        form = AddUpdateBookForm(request.POST)
-        text = "The book has already saved"
-        try:
-            if form.is_valid():
-                if not pk:
-                    book = Book.objects.get(pk=pk)
-                else:
-                    book = Book()
-                book.title = form.cleaned_data.get("title")
-                book.author = form.cleaned_data.get("author")
-                book.pub_date = form.cleaned_data.get("pub_date")
-                book.pages_amount = form.cleaned_data.get("pages_amount")
-                book.pub_language = form.cleaned_data.get("pub_language")
-                book.link = form.cleaned_data.get("link")
-                book.isbn_num = form.cleaned_data.get("isbn_num")
-                book.save()
-        except KeyError:
-            pass
 
-            raise ValidationError("Invalid form")
-        return render(request, "book/edit_book.html", {"form": form, "text": text})
+class BookAddView(CreateView):
+    model = Book
+    template_name = "book/edit_book.html"
+    fields = ["title", "author", "pub_date", "pages_amount", "pub_language", "link", "isbn_num"]
+    success_url = "/search/"
 
 
 # Exercise 2

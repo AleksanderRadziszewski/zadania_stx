@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <a href="{% url "search" %}"> <- search</a>
+    <a href="{% url "search book list" %}"> <- search</a>
 
     <form method="post" action="">
         {% csrf_token %}

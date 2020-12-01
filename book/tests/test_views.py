@@ -1,5 +1,5 @@
 from django.test import TestCase, Client
-from django.urls import reverse, resolve
+from django.urls import reverse
 from book.models import Book
 
 
@@ -10,9 +10,9 @@ class TestViews(TestCase):
         self.list_url = reverse("book import")
         self.welcome = reverse("welcome")
         self.book_list = reverse("search book list")
-        self.update_url = reverse("update", kwargs={"pk": 1})
-        Book.objects.create(
-            title="TestCase",
+        self.add_url = reverse("add")
+        self.book = Book.objects.create(
+            title="FirstBook",
             author="TestCase",
             pub_date="2020",
             isbn_num="9781426749490",
@@ -21,14 +21,22 @@ class TestViews(TestCase):
             link="http://www.google.pl",
         )
 
+        self.update_url = reverse("update", kwargs={"pk": self.book.id})
+
     def test_book_list_import_GET(self):
         response = self.client.get(self.list_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "book/search_import.html")
 
-    def test_book_add_update_GET(self):
+    def test_book_update_GET(self):
         response = self.client.get(self.update_url)
+
+        self.assertEquals(response.status_code, 200)
+        self.assertTemplateUsed(response, "book/edit_book.html")
+
+    def test_book_add_GET(self):
+        response = self.client.get(self.add_url)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "book/edit_book.html")
@@ -45,3 +53,39 @@ class TestViews(TestCase):
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "book/welcome.html")
 
+    def test_book_add_POST(self):
+        response = self.client.post(
+            self.add_url,
+            {
+                "title": "Harry",
+                "author": "me",
+                "pub_date": "2020",
+                "isbn_num": "9781426749490",
+                "pages_amount": 666,
+                "pub_language": "EN",
+                "link": "http://www.google.pl",
+            }, follow=True
+        )
+        test_case = Book.objects.all().last()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(test_case.title, "Harry")
+
+    def test_book_update_POST(self):
+        response = self.client.post(
+            self.update_url,
+            {
+
+                "title": "Edit by me",
+                "author": "Edit",
+                "pub_date": "2020",
+                "isbn_num": "9781426749490",
+                "pages_amount": 666,
+                "pub_language": "EN",
+                "link": "http://www.google.pl",
+            },
+        )
+
+        self.book.refresh_from_db()
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(self.book.title, "Edit by me")

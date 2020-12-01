@@ -9,15 +9,19 @@ class TestUrls(SimpleTestCase):
 
     def test_search_book_list_url_is_resolve(self):
         url = reverse("search book list")
-        self.assertEquals(resolve(url).func.view_class, views.SearchBookListView)
+        self.assertEquals(resolve(url).func.view_class, views.BookListSearchView)
 
     def test_book_import_url_is_resolve(self):
         url = reverse("book import")
         self.assertEquals(resolve(url).func.view_class, views.BooksImportView)
 
-    def test_book_add_update_url_is_resolve(self):
+    def test_book_add_url_is_resolve(self):
+        url = reverse("add")
+        self.assertEquals(resolve(url).func.view_class, views.BookAddView)
+
+    def test_book_update_url_is_resolve(self):
         url = reverse("update", kwargs={"pk": 522})
-        self.assertEquals(resolve(url).func.view_class, views.AddUpdateBookView)
+        self.assertEquals(resolve(url).func.view_class, views.BookUpdateView)
 
     def test_welcome_url_is_resolve(self):
         url = reverse("welcome")
@@ -27,15 +31,13 @@ class TestUrls(SimpleTestCase):
         url = reverse("book search api", kwargs={"title": "King of the Alex"})
         self.assertEquals(resolve(url).func.view_class, views.BookSearchFilterAPIView)
 
+
 class TestBookRestAPI(APITestCase, URLPatternsTestCase):
     urlpatterns = [
         path('books_rest/', include('book.urls')),
     ]
+
     def test_create_book(self):
-        url=reverse("book-list")
-        response=self.client.get(url, format="json")
+        url = reverse("book-list")
+        response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
-
-
-
