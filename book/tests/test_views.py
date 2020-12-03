@@ -10,7 +10,7 @@ class TestViews(TestCase):
         self.list_url = reverse("book import")
         self.welcome = reverse("welcome")
         self.book_list = reverse("search book list")
-        self.add_url = reverse("add")
+        self.url_add = reverse("add")
         self.book = Book.objects.create(
             title="FirstBook",
             author="TestCase",
@@ -36,12 +36,12 @@ class TestViews(TestCase):
         self.assertTemplateUsed(response, "book/edit_book.html")
 
     def test_book_add_GET(self):
-        response = self.client.get(self.add_url)
+        response = self.client.get(self.url_add)
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, "book/edit_book.html")
 
-    def test_search_book_list_GET(self):
+    def test_book_list_GET(self):
         response = self.client.get(self.book_list)
 
         self.assertEquals(response.status_code, 200)
@@ -89,3 +89,11 @@ class TestViews(TestCase):
         self.book.refresh_from_db()
         self.assertEqual(response.status_code, 302)
         self.assertEqual(self.book.title, "Edit by me")
+
+
+    def test_book_create_no_data(self):
+        response = self.client.post(self.url_add, {})
+        books = Book.objects.all().count()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(books, 1)

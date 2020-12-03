@@ -22,7 +22,7 @@ class BookTest(APITestCase):
 
         self.url_edit = f"/books_rest/viewset/books/{self.data_set_up.id}/"
 
-    def test_create_book(self):
+    def test_book_create(self):
         data_create = {
             "pk": 1,
             "title": "Rest Api Test create",
@@ -40,20 +40,23 @@ class BookTest(APITestCase):
         self.assertEqual(Book.objects.count(), 2)
         self.assertEqual(test_case_create.title, "Rest Api Test create")
 
-    def test_update_book(self):
+    def test_book_update(self):
         data_update = BookSerializer(self.data_set_up).data
         data_update["title"] = "Rest Api Test update"
 
         response = self.client.put(self.url_edit, data_update, format="json")
         test_case_update = Book.objects.get()
+        self.data_set_up.refresh_from_db()
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Book.objects.count(), 1)
         self.assertEqual(test_case_update.title, "Rest Api Test update")
 
-    def test_delete_book(self):
+    def test_book_delete(self):
         data_delete = BookSerializer(self.data_set_up).data
         data_delete["title"] = "Rest Api delete"
 
         response = self.client.delete(self.url_edit, data_delete, format="json")
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Book.objects.count(), 0)
+
+
