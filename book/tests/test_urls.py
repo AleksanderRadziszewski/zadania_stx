@@ -57,15 +57,15 @@ class TestBookRestAPI(APITestCase, URLPatternsTestCase):
 
         self.url_edit = f"/books_rest/viewset/books/{self.data_set_up.id}/"
 
-    def test_create_book_rest_url(self):
+    def test_book_create_rest_url(self):
         response = self.client.get(self.url_add)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_delete_put_book_rest_url(self):
+    def test_book_delete_put_rest_url(self):
         response = self.client.get(self.url_edit)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-    def test_delete_put_book_rest_url_not_exist(self):
+    def test_book_delete_put_rest_url_not_exist(self):
         self.url_edit_not_exist=self.url_edit = f"/books_rest/viewset/books/666/"
         response = self.client.get(self.url_edit_not_exist
                                    )

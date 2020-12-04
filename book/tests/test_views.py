@@ -55,18 +55,18 @@ class TestViews(TestCase):
 
     def test_book_add_POST(self):
         response = self.client.post(
-            self.add_url,
+            self.url_add,
             {
                 "title": "Harry",
                 "author": "me",
                 "pub_date": "2020",
-                "isbn_num": "9781426749490",
+                "isbn_num": "9781426",
                 "pages_amount": 666,
                 "pub_language": "EN",
                 "link": "http://www.google.pl",
-            }, follow=True
+            }, format="json", follow=True
         )
-        test_case = Book.objects.all().last()
+        test_case = Book.objects.last()
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(test_case.title, "Harry")

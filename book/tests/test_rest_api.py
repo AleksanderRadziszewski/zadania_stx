@@ -8,7 +8,6 @@ from book.serializers import BookSerializer
 class BookTest(APITestCase):
 
     def setUp(self):
-        self.url_add = reverse("book-list")
 
         self.data_set_up = Book.objects.create(
             title="Rest Api Test",
@@ -21,20 +20,21 @@ class BookTest(APITestCase):
         )
 
         self.url_edit = f"/books_rest/viewset/books/{self.data_set_up.id}/"
+        self.url_add = reverse("book-list")
 
     def test_book_create(self):
         data_create = {
-            "pk": 1,
             "title": "Rest Api Test create",
             "author": "me",
             "pub_date": "2009",
-            "isbn_num": "9781426749490",
+            "isbn_num": "97814",
             "pages_amount": 777,
             "pub_language": "EN",
-            "link": "http://www.google.pl",
+            "link": "http://www.potter.pl"
         }
 
         response = self.client.post(self.url_add, data_create, format="json")
+        self.data_set_up.refresh_from_db()
         test_case_create = Book.objects.all().last()
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Book.objects.count(), 2)
