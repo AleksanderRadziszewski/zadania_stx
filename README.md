@@ -99,9 +99,31 @@ d) add book
 
 <img width="1275" alt="Zrzut ekranu 2020-11-9 o 18 40 21" src="https://user-images.githubusercontent.com/56914063/98576661-29c5f500-22bb-11eb-90e4-84b6f9a1d39b.png">
 
-## 6. Unit tests
+## 6. Rest Api Views
 
-![Zrzut ekranu 2020-11-9 o 18 58 15](https://user-images.githubusercontent.com/56914063/98578679-f2a51300-22bd-11eb-98f0-790f80cb2c5f.png)
+a) Book List Api View
+
+![Zrzut ekranu 2020-12-4 o 13 21 50](https://user-images.githubusercontent.com/56914063/101163539-04b37080-3634-11eb-904f-ad9e1ebf9a7d.png)
+
+b) Book Created Api View
+
+![Zrzut ekranu 2020-12-4 o 13 22 08](https://user-images.githubusercontent.com/56914063/101163717-48a67580-3634-11eb-98a4-2e72027f7ebe.png)
+
+![Zrzut ekranu 2020-12-4 o 13 37 19](https://user-images.githubusercontent.com/56914063/101164801-e2baed80-3635-11eb-8727-e7d7e4fc417d.png)
+
+c) Book Update Api View
+
+![Zrzut ekranu 2020-12-4 o 13 40 01](https://user-images.githubusercontent.com/56914063/101165020-3dece000-3636-11eb-9961-994899cc5386.png)
+
+d) Book Delete Api View
+
+![Zrzut ekranu 2020-12-4 o 13 41 45](https://user-images.githubusercontent.com/56914063/101165203-86a49900-3636-11eb-9c3c-57f0a16835bb.png)
+
+
+
+## 7. Unit tests
+
+a) Test 
 
 
 # Sources:
