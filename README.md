@@ -123,7 +123,7 @@ d) Book Delete Api View
 
 ## 7. Unit tests
 
-a) Test 
+![Zrzut ekranu 2020-12-4 o 16 45 07](https://user-images.githubusercontent.com/56914063/101183797-418d6080-3650-11eb-9759-1e3efe5fc5b7.png)
 
 
 # Sources:
