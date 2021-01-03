@@ -1,6 +1,6 @@
 from django.test import SimpleTestCase
 from django.urls import reverse, resolve, path, include
-from django_api_client import status
+from rest_framework import status
 from rest_framework.test import APITestCase, URLPatternsTestCase
 from book import views
 from book.models import Book
