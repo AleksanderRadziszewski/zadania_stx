@@ -79,12 +79,12 @@ WSGI_APPLICATION = "zadania_stx.wsgi.application"
 
 DATABASES = {
     "default": {
-        "HOST": "127.0.0.1",
+        "HOST": "db",
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": "book",
+        "NAME": "postgres",
         "USER": "postgres",
-        "PASSWORD": "Elzbieta1959",
-        "PORT": 5433,
+        "PASSWORD": "postgres",
+        "PORT": 5432,
     }
 }
 
